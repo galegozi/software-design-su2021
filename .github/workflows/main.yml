@@ -1,4 +1,4 @@
-name: .NET build
+name: .NET build and test
 
 on:
   push:
@@ -25,3 +25,9 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish
       run: dotnet publish FrontEnd/FrontEnd.csproj -c Release -o front
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        name: frontend
+        path: FrontEnd/front/**
+        if-no-files-found: error
