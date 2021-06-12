@@ -24,4 +24,10 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run: dotnet publish FrontEnd/FrontEnd.csproj -c Release -o FrontEnd/front
+      run: dotnet publish FrontEnd/FrontEnd.csproj -c Release -o front
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: front
+        path: FrontEnd/front/**
+        if-no-files-found: error
