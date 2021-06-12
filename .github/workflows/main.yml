@@ -24,4 +24,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run: dotnet publish FrontEnd/FrontEnd.csproj -c Release -o front
+      run: dotnet publish FrontEnd/FrontEnd.csproj -c Release -o FrontEnd/front
