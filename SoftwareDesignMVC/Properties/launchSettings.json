@@ -3,12 +3,12 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:48988",
-      "sslPort": 44373
+      "applicationUrl": "http://localhost:12245",
+      "sslPort": 44317
     }
   },
   "profiles": {
-    "FrontEnd": {
+    "SoftwareDesignMVC": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
