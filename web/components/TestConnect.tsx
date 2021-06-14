@@ -1,20 +1,16 @@
-import { HelloRequest, HelloReply } from '../protos/helloworld_pb'
-import { GreeterClient } from '../protos/HelloworldServiceClientPb'
-import { useState } from 'react'
-const client = new GreeterClient('http://localhost:8080')
+import { useEffect, useState } from 'react'
+import useSWR from 'swr'
 
-const request = new HelloRequest()
-request.setName('World')
+//@ts-ignore
+const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 const TestConnect: React.FC = () => {
-  client.sayHello(request, {}, (err, response) => {
-    const message = response.getMessage()
-    console.log(message)
-    setResponse(message)
-  })
-
-  const [response, setResponse] = useState('')
-  return <div>gRPC Server Response: {response}</div>
+  const { data, error } = useSWR('http://localhost:3001/', fetcher)
+  console.log(data)
+  if (data) {
+    return <div>Server Response: {data.message}</div>
+  }
+  return <div>No connection to server yet.</div>
 }
 
 export default TestConnect

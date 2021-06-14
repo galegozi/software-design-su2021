@@ -1,1 +1,0 @@
-for container in `docker ps -a -q  --filter ancestor=envoyproxy/envoy:v1.17.0`; do docker rm `docker stop $container`; done
