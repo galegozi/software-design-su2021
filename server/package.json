@@ -11,6 +11,8 @@
     "node": ">=10"
   },
   "scripts": {
+    "stop:proxy": "bash ./stop-proxy.sh",
+    "start:proxy": "bash ./start-proxy.sh",
     "start": "tsdx watch --onSuccess 'node dist/index.js'",
     "gen-types": "proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=src/protos/ ../protos/*.proto",
     "build": "tsdx build",
