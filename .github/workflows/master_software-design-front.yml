@@ -56,4 +56,4 @@ jobs:
         app-name: 'software-design-front'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_680e0bca41fc4c5d94ad294987c2059a }}
-        package: web
+        package: .
