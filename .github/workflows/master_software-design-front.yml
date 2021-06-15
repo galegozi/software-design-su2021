@@ -19,7 +19,7 @@ jobs:
     - name: change directory
       run: |
         cd web
-        ls
+        dir
 
     - name: Set up Node.js version
       uses: actions/setup-node@v1
