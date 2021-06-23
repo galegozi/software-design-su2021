@@ -5,7 +5,7 @@ import useSWR from 'swr'
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 const TestConnect: React.FC = () => {
-  const { data, error } = useSWR('http://localhost:3001/', fetcher)
+  const { data, error } = useSWR('http://localhost:3001/auth', fetcher)
   console.log(data)
   if (data) {
     return <div>Server Response: {data.message}</div>

@@ -1,3 +1,8 @@
 @tailwind base;
+.bg-fuel {
+  background-image: url(/fuel.jpeg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 @tailwind components;
 @tailwind utilities;
