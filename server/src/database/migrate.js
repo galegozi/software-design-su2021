@@ -29,7 +29,7 @@ async function run() {
   const dbms = new KnexDbms('pg', options2);
   const meyer = new Meyer({
     tableName: '_migrations',
-    migrationsPath: path.join(__dirname, '..', 'migrations'),
+    migrationsPath: path.join(__dirname, '..', '..', 'migrations'),
     development: process.env.MIGRATION_MODE === 'development',
     dbms,
   });
