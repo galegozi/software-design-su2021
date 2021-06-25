@@ -3,7 +3,7 @@ create extension if not exists citext;
 
 CREATE TABLE UserCredentials (
     id SERIAL,
-    username CITEXT NOT NULL,
+    username CITEXT UNIQUE NOT NULL,
     password text NOT NULL,
     PRIMARY KEY (id)
 );
