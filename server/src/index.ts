@@ -17,12 +17,16 @@ app.get('/', (req, res) => {
   res.json({ message: 'Hello from backend' });
 });
 
-app.get('/users', (req, res) => {
+app.get('/users', async (req, res) => {
   // connect to the database
   // run the command to select the users
   // format the data in the way we want to return it
   // send it back with res.json
-  res.json({ message: 'Hello from auth' });
+  // res.json({ message: 'Hello from auth' });
+  const users = await prisma.usercredentials.findMany({
+    select: { id: true, username: true },
+  });
+  res.status(200).json(users);
 });
 
 app.post('/user', async (req, res) => {
