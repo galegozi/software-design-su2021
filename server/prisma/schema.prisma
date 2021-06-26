@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model migrations {
+  id       Int    @id
+  name     String
+  up       String
+  down     String
+  checksum String
+
+  @@map("_migrations")
+}
+
+model clientinformation {
+  id              Int             @id @default(autoincrement())
+  user_id         Int
+  name            String          @db.VarChar(50)
+  address         String          @db.VarChar(100)
+  city            String          @db.VarChar(100)
+  state           String          @db.VarChar(2)
+  zip             String          @db.VarChar(9)
+  address2        String?         @db.VarChar(100)
+  usercredentials usercredentials @relation(fields: [user_id], references: [id])
+}
+
+model fuelquote {
+  id                Int             @id @default(autoincrement())
+  user_id           Int
+  gallons           Int
+  price_per_gallon  Int
+  delivery_date     DateTime        @db.Date
+  delivery_address  String          @db.VarChar(100)
+  delivery_city     String          @db.VarChar(100)
+  delivery_state    String          @db.VarChar(2)
+  delivery_zip      String          @db.VarChar(9)
+  delivery_address2 String?         @db.VarChar(100)
+  usercredentials   usercredentials @relation(fields: [user_id], references: [id])
+}
+
+model usercredentials {
+  id                Int                 @id @default(autoincrement())
+  username          String              @db.Citext
+  password          String
+  clientinformation clientinformation[]
+  fuelquote         fuelquote[]
+}
