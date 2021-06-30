@@ -10,9 +10,11 @@ const LogoutPage = () => {
     setTimeout(() => router.push('/'), 500)
   }, [])
   return (
-    <div className='bg-fuel text-center text-4xl font-medium h-screen flex justify-center items-center'>
-      <h1 className='text-white'>Logging out...</h1>
-    </div>
+    <Layout>
+      <div className='bg-fuel text-center text-4xl font-medium h-screen flex justify-center items-center'>
+        <h1 className='text-white'>Logging out...</h1>
+      </div>
+    </Layout>
   )
 }
 
