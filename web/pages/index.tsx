@@ -1,6 +1,7 @@
 // import TestConnect from '../components/TestConnect'
 // import Layout from '../components/Layout'
-import { SetStateAction, useState } from 'react'
+import { useRouter } from 'next/dist/client/router'
+import React, { SetStateAction, useState } from 'react'
 import classNames from '../utils/classNames'
 
 const tabs = [
@@ -53,17 +54,20 @@ const Tabs: React.FC<ITabsComponentProps> = ({ setActiveTab, activeTab }) => {
 const SignIn = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
-  const handleLogin = () => {
+  const router = useRouter()
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: Send username and password to the backend for verifcation
     // TODO: Set UI to loading state
+    e.preventDefault()
+    // FIXME: Don't just redirect
+    router.push('/quote')
   }
 
   return (
     <div className='mt-8'>
       Sign in to get fuel quotes
       <div className='mt-6'>
-        <form className='space-y-6'>
+        <form onSubmit={handleLogin} className='space-y-6'>
           <div>
             <label
               htmlFor='username'
@@ -123,6 +127,8 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
 
+  const router = useRouter()
+
   const validateRegistration = (e) => {
     e.preventDefault()
 
@@ -136,6 +142,8 @@ const Register: React.FC = () => {
 
   const handleRegistration = () => {
     // TODO: send registration to back in, set UI to loading state
+    // FIXME: Don't just redirect to profile
+    router.push('/profile')
   }
 
   return (
