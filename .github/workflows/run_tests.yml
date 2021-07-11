@@ -6,6 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cd server
+      - run: ls -al
+      - run: dir
       - uses: actions/setup-node@v2
         with:
           cache: 'npm'
