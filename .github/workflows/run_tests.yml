@@ -10,6 +10,8 @@ jobs:
       - run: ls -al
       - run: dir
       - uses: actions/setup-node@v2
+        working-directory: server
+        run: cd server
         with:
           cache: 'npm'
           version: '14'
