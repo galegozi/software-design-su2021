@@ -56,7 +56,7 @@ const SignIn = () => {
   const [password, setPassword] = useState('')
   const router = useRouter()
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    // TODO: Send username and password to the backend for verifcation
+    // TODO: Send username and password to the backend for verification
     // TODO: Set UI to loading state
     e.preventDefault()
     // FIXME: Don't just redirect
@@ -136,7 +136,8 @@ const Register: React.FC = () => {
       handleRegistration()
     } else {
       // TODO: show an error message that the passwords don't match
-      console.error('passwords dont match')
+      // We should consider this link: https://www.itsolutionstuff.com/post/password-and-confirm-password-validation-in-reactexample.html
+      console.error("passwords don't match")
     }
   }
 
