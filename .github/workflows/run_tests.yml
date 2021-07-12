@@ -12,6 +12,7 @@ jobs:
         with:
           cache: 'npm'
           node-version: '14'
+          directory: server
   client:
     runs-on: ubuntu-latest
     steps:
