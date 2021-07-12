@@ -10,11 +10,9 @@ jobs:
           node-version: '14'
       - run: |
           cd server
-          npm ci
           npm install -g yarn
           yarn
           yarn test
-      - run: cd server && yarn
   client:
     runs-on: ubuntu-latest
     steps:
@@ -22,9 +20,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-      - uses: actions/setup-yarn@v2
       - run: |
           cd web
-          npm ci
           npm install -g yarn
           yarn
