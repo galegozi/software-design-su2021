@@ -9,7 +9,7 @@ jobs:
       - run: cd server
       - run: ls -al
       - run: dir
-      - uses: actions/setup-node@v2
+      - run: actions/setup-node@v2
         working-directory: server
         with:
           cache: 'npm'
