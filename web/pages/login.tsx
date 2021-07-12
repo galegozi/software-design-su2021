@@ -1,5 +1,3 @@
-//hi
-
 const IndexPage = () => {
   return (
     <div>
