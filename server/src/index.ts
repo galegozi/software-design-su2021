@@ -32,13 +32,14 @@ app.get('/users', async (req, res) => {
 app.post('/user', async (req, res) => {
   // get the user out of the request
   let { username, password } = req.body;
-  // hash the password
-  const hashed = await bcrypt.hash(password, saltRounds);
-  // now that we've hashed the password, remove the memory of the plaintext password
-  password = null;
-  delete req.body.password;
-  // create the user in the database
+
   try {
+    // hash the password
+    const hashed = await bcrypt.hash(password, saltRounds);
+    // now that we've hashed the password, remove the memory of the plaintext password
+    password = null;
+    delete req.body.password;
+    // create the user in the database
     await prisma.usercredentials.create({
       data: { username, password: hashed },
     });
