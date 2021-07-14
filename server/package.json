@@ -11,7 +11,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch --onSuccess \"node dist/index.js\"",
+    "start": "tsdx watch --onSuccess \"node -r dotenv/config dist/index.js\"",
     "migrate": "node -r dotenv/config  ./src/database/migrate.js",
     "watch": "tsdx watch",
     "build": "tsdx build",
