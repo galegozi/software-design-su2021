@@ -60,7 +60,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.post('/user', async (req, res) => {
+app.post('/userInfo', async (req, res) => {
   // get the user updated profile out of the request
   const { name, addr1, addr2, city, state, zipCode } = req.body;
   //validation
@@ -134,6 +134,43 @@ app.post('/user', async (req, res) => {
     return res
       .status(400)
       .json({ error: true, message: 'Unknown Error occurred' });
+  }
+  // send update to database
+  // response with success or error
+});
+
+app.get('/userInfo', async (req, res) => {
+  //get user information to display on profile page load
+  // assuming that the username is given by login part. It is hard coded for now
+  const username = 'quannguyen';
+  // validate that every fields are correct
+  //try
+  try {
+    const user = await prisma.usercredentials.findFirst({
+      where: { username },
+    });
+    if (!user) {
+      return res.status(400).json({ error: true, message: 'User not found' });
+    }
+    const id = user.id;
+    const userInfo = await prisma.clientinformation.findUnique({
+      select: {
+        name: true,
+        address: true,
+        address2: true,
+        city: true,
+        state: true,
+        zip: true,
+      },
+      where: { user_id: id },
+    });
+    return res.status(200).json(userInfo);
+    
+  } catch (e) {
+    console.error(e);
+    return res
+      .status(400)
+      .json({ error: true, message: 'Unknown Error occurred while trying to load user profile' });
   }
   // send update to database
   // response with success or error
