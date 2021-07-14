@@ -1,0 +1,15 @@
+{
+  "name": "software-design-su2021",
+  "author": "Michael McQuade",
+  "scripts": {
+    "dev": "concurrently -n web,server --prefix-colors bgGreen,bgBlue \"yarn workspace web dev\" \"yarn workspace server start\""
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.0"
+  },
+  "private": true,
+  "workspaces": [
+    "web",
+    "server"
+  ]
+}
