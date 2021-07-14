@@ -29,7 +29,7 @@ app.get('/users', async (req, res) => {
   res.status(200).json(users);
 });
 
-app.post('/user', async (req, res) => {
+app.post('/register', async (req, res) => {
   // get the user out of the request
   let { username, password } = req.body;
 
@@ -58,6 +58,38 @@ app.post('/user', async (req, res) => {
       res.status(400).json({ error: true, message: 'Unknown Error occurred' });
     }
   }
+});
+
+app.post('/user', async (req, res) => {
+  // get the user updated profile out of the request
+  const {name, addr1, addr2, city, state, zipCode} = req.body; 
+  // assuming that the username is given by login part. It is hard coded for now
+  const username = 'quannguyen'
+  // validate that every fields are correct 
+  //try
+  try {
+    const user = await prisma.usercredentials.findFirst({
+      where: {username}
+    })
+    if (!user){
+      return res.status(400).json({error: true, message: 'User not found'})
+    }
+    const id = user.id
+    await prisma.clientinformation.upsert({
+      create:{usercredentials: {connect: {id}}, name, address: addr1, address2: addr2, city, state, zip: zipCode}, 
+      update: {name, address: addr1, address2: addr2, city, state, zip: zipCode},
+      where: {user_id:id}
+    });
+    return res.status(200).json({error: false, message: 'User Updated'})
+  }
+  catch (e) {
+    console.error(e);
+    return res.status(400).json({ error: true, message: 'Unknown Error occurred' });
+  }
+  // send update to database
+  // response with success or error
+
+  
 });
 
 app.listen(port, () => {
