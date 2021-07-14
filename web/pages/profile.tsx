@@ -2,10 +2,11 @@
 // import TestConnect from '../components/TestConnect'
 import Layout from '../components/Layout'
 import React, { useState } from 'react'
-
+import { useAlert } from 'react-alert'
 import axios from 'axios'
 
 const ProfileManagement = () => {
+  const alert = useAlert()
   const [name, setName] = useState('')
   const [addr1, setAddr1] = useState('')
   const [addr2, setAddr2] = useState('')
@@ -16,16 +17,21 @@ const ProfileManagement = () => {
   const handleSubmit = async (event: React.SyntheticEvent) => {
     // TODO: Send info to the backend for verifcation
     event.preventDefault()
-    const response = await axios.post('http://localhost:3001/user', {
-      name,
-      addr1,
-      addr2,
-      city,
-      state,
-      zipCode,
-    })
-
-    console.log(response)
+    try {
+      const response = await axios.post('http://localhost:3001/user', {
+        name,
+        addr1,
+        addr2,
+        city,
+        state,
+        zipCode,
+      })
+      alert.success('It worked')
+      console.log(response)
+    } catch (e) {
+      console.error(e)
+      alert.show(e.message)
+    }
 
     // TODO: Set UI to loading state
   }
