@@ -19,7 +19,7 @@ model migrations {
 
 model clientinformation {
   id              Int             @id @default(autoincrement())
-  user_id         Int
+  user_id         Int             @unique
   name            String          @db.VarChar(50)
   address         String          @db.VarChar(100)
   city            String          @db.VarChar(100)
@@ -44,9 +44,9 @@ model fuelquote {
 }
 
 model usercredentials {
-  id                Int                 @id @default(autoincrement())
-  username          String              @db.Citext
+  id                Int                @id @default(autoincrement())
+  username          String             @unique @db.Citext
   password          String
-  clientinformation clientinformation[]
+  clientinformation clientinformation?
   fuelquote         fuelquote[]
 }

@@ -1,7 +1,7 @@
 -- up:begin
 CREATE TABLE ClientInformation (
     id SERIAL,
-    user_id INTEGER NOT NULL,
+    user_id INTEGER UNIQUE NOT NULL,
     name VARCHAR(50) NOT NULL,
     address VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
