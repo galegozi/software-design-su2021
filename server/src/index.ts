@@ -62,34 +62,51 @@ app.post('/register', async (req, res) => {
 
 app.post('/user', async (req, res) => {
   // get the user updated profile out of the request
-  const {name, addr1, addr2, city, state, zipCode} = req.body; 
+  const { name, addr1, addr2, city, state, zipCode } = req.body;
+  if (name.length > 100) {
+    return res.status(400).json({ error: true, message: 'Name is too long' });
+  }
   // assuming that the username is given by login part. It is hard coded for now
-  const username = 'quannguyen'
-  // validate that every fields are correct 
+  const username = 'quannguyen';
+  // validate that every fields are correct
   //try
   try {
     const user = await prisma.usercredentials.findFirst({
-      where: {username}
-    })
-    if (!user){
-      return res.status(400).json({error: true, message: 'User not found'})
-    }
-    const id = user.id
-    await prisma.clientinformation.upsert({
-      create:{usercredentials: {connect: {id}}, name, address: addr1, address2: addr2, city, state, zip: zipCode}, 
-      update: {name, address: addr1, address2: addr2, city, state, zip: zipCode},
-      where: {user_id:id}
+      where: { username },
     });
-    return res.status(200).json({error: false, message: 'User Updated'})
-  }
-  catch (e) {
+    if (!user) {
+      return res.status(400).json({ error: true, message: 'User not found' });
+    }
+    const id = user.id;
+    await prisma.clientinformation.upsert({
+      create: {
+        usercredentials: { connect: { id } },
+        name,
+        address: addr1,
+        address2: addr2,
+        city,
+        state,
+        zip: zipCode,
+      },
+      update: {
+        name,
+        address: addr1,
+        address2: addr2,
+        city,
+        state,
+        zip: zipCode,
+      },
+      where: { user_id: id },
+    });
+    return res.status(200).json({ error: false, message: 'User Updated' });
+  } catch (e) {
     console.error(e);
-    return res.status(400).json({ error: true, message: 'Unknown Error occurred' });
+    return res
+      .status(400)
+      .json({ error: true, message: 'Unknown Error occurred' });
   }
   // send update to database
   // response with success or error
-
-  
 });
 
 app.listen(port, () => {

@@ -29,8 +29,14 @@ const ProfileManagement = () => {
       alert.success('It worked')
       console.log(response)
     } catch (e) {
-      console.error(e)
-      alert.show(e.message)
+      console.error(e.response.data)
+      const message = e?.response?.data?.message
+      if (message) {
+        alert.show(message)
+      } else {
+        // show generic message
+        alert.show('unknown error occured')
+      }
     }
 
     // TODO: Set UI to loading state
