@@ -63,8 +63,21 @@ app.post('/register', async (req, res) => {
 app.post('/user', async (req, res) => {
   // get the user updated profile out of the request
   const { name, addr1, addr2, city, state, zipCode } = req.body;
+  //validation
   if (name.length > 100) {
     return res.status(400).json({ error: true, message: 'Name is too long' });
+  }
+  if (addr1.length < 5){
+    return res.status(400).json({ error: true, message: 'Address is too short' })
+  }
+  if (!/((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+[0-9a-z]+$/i.test(addr1)) {
+    return res.status(400).json({ error: true, message: 'Address can only contain number or letter' })
+  }
+  if (city.length < 3){
+    return res.status(400).json({ error: true, message: 'City is too short' })
+  }
+  if (/[^a-zA-Z]/.test(city)){
+    return res.status(400).json({ error: true, message: 'City must contain letter only' })
   }
   // assuming that the username is given by login part. It is hard coded for now
   const username = 'quannguyen';
