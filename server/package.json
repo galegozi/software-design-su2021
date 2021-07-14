@@ -1,4 +1,5 @@
 {
+  "name": "server",
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
@@ -11,7 +12,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch --onSuccess \"node -r dotenv/config dist/index.js\"",
+    "start": "tsdx watch --verbose --onSuccess \"node -r dotenv/config dist/index.js\"",
     "migrate": "node -r dotenv/config  ./src/database/migrate.js",
     "watch": "tsdx watch",
     "build": "tsdx build",
@@ -33,7 +34,6 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "server",
   "author": "Michael McQuade",
   "module": "dist/server.esm.js",
   "size-limit": [
