@@ -1,7 +1,9 @@
 //TODO: State proper selector.
 // import TestConnect from '../components/TestConnect'
 import Layout from '../components/Layout'
-import { useState } from 'react'
+import React, { useState } from 'react'
+
+import axios from 'axios'
 
 const ProfileManagement = () => {
   const [name, setName] = useState('')
@@ -11,8 +13,20 @@ const ProfileManagement = () => {
   const [state, setState] = useState('')
   const [zipCode, setZipCode] = useState('')
 
-  const profMan = () => {
+  const handleSubmit = async (event: React.SyntheticEvent) => {
     // TODO: Send info to the backend for verifcation
+    event.preventDefault()
+    const response = await axios.post('http://localhost:3001/user', {
+      name,
+      addr1,
+      addr2,
+      city,
+      state,
+      zipCode,
+    })
+
+    console.log(response)
+
     // TODO: Set UI to loading state
   }
 
@@ -82,7 +96,7 @@ const ProfileManagement = () => {
     <div className='mt-8'>
       Profile Management
       <div className='mt-6'>
-        <form className='space-y-6'>
+        <form onSubmit={handleSubmit} className='space-y-6'>
           <div className='space-y-1'>
             <label
               htmlFor='name'
