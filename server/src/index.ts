@@ -71,7 +71,7 @@ app.post('/user', async (req, res) => {
     return res.status(400).json({ error: true, message: 'Address is too short' })
   }
   if (!/((^[0-9]+[a-z]+)|(^[a-z]+[0-9]+))+[0-9a-z]+$/i.test(addr1)) {
-    return res.status(400).json({ error: true, message: 'Address can only contain number or letter' })
+    return res.status(400).json({ error: true, message: 'Address is invalid' })
   }
   if (city.length < 3){
     return res.status(400).json({ error: true, message: 'City is too short' })
