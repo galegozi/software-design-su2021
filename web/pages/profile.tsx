@@ -32,10 +32,10 @@ const ProfileManagement = () => {
       console.error(e.response.data)
       const message = e?.response?.data?.message
       if (message) {
-        alert.show(message)
+        alert.error(message)
       } else {
         // show generic message
-        alert.show('unknown error occured')
+        alert.error('unknown error occured')
       }
     }
 
