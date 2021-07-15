@@ -1,55 +1,33 @@
 import DBClient from '../database/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
-import type { StrategyOptions } from 'passport-jwt';
-import passport from 'passport';
-import {Router} from 'express'
+
+import { Router } from 'express';
 if (!process.env.JWT_SECRET) {
   console.error(
     "Please create JWT_SECRET environment variable with crypto.randomBytes(64).toString('hex');"
   );
 }
 
-const router = Router()
-const prisma = DBClient.getInstance().prisma
+import * as CONFIG from '../config';
 
-
+const router = Router();
+const prisma = DBClient.getInstance().prisma;
 
 const saltRounds = 10; // salt rounds for password hashing
 
-const JWTOptions: StrategyOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET,
-  issuer: 'softwaredesignsu2021.local',
-  audience: 'softwaredesignsu2021.local',
-};
-
 const createSignedJWTForUser = (user: { id: number; username: string }) => {
   const token = jwt.sign(
-    { sub: user, iss: JWTOptions.issuer, aud: JWTOptions.audience },
-    JWTOptions.secretOrKey!,
-    { expiresIn: 10000000 }
+    {
+      sub: user,
+      iss: CONFIG.JWTOptions.issuer,
+      aud: CONFIG.JWTOptions.audience,
+    },
+    CONFIG.JWTOptions.secretOrKey!,
+    { expiresIn: CONFIG.JWT_EXPIRATION_TIME }
   );
   return token;
 };
-
-passport.use(
-  new JWTStrategy(JWTOptions, async (jwt_payload, done) => {
-    try {
-      const user = await prisma.usercredentials.findUnique({
-        where: { id: jwt_payload.sub },
-      });
-      if (user) {
-        return done(null, user);
-      } else {
-        return done(null, false);
-      }
-    } catch (e) {
-      return done(e, false);
-    }
-  })
-);
 
 router.post('/login', async (req, res) => {
   // get the username and password from the req body
@@ -97,37 +75,35 @@ router.post('/login', async (req, res) => {
   }
 });
 
-
-
 router.post('/register', async (req, res) => {
-    // get the user out of the request
-    let { username, password } = req.body;
-  
-    try {
-      // hash the password
-      const hashed = await bcrypt.hash(password, saltRounds);
-      // now that we've hashed the password, remove the memory of the plaintext password
-      password = null;
-      delete req.body.password;
-      // create the user in the database
-      await prisma.usercredentials.create({
-        data: { username, password: hashed },
-      });
-      // TODO: create the JWT and set the header/cookie
-      res.status(201).json({ error: false, message: 'User created' });
-    } catch (e) {
-      // https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
-      // Errorcode P2002 is unique constraint, which is the only "known" error we should have when creating an account
-      if (e.code === 'P2002') {
-        res
-          .status(400)
-          .json({ error: true, message: 'That user already exists.' });
-      } else {
-        // log the error to the server console
-        console.error(e);
-        res.status(400).json({ error: true, message: 'Unknown Error occurred' });
-      }
-    }
-  });
+  // get the user out of the request
+  let { username, password } = req.body;
 
-  export default router
+  try {
+    // hash the password
+    const hashed = await bcrypt.hash(password, saltRounds);
+    // now that we've hashed the password, remove the memory of the plaintext password
+    password = null;
+    delete req.body.password;
+    // create the user in the database
+    await prisma.usercredentials.create({
+      data: { username, password: hashed },
+    });
+    // TODO: create the JWT and set the header/cookie
+    res.status(201).json({ error: false, message: 'User created' });
+  } catch (e) {
+    // https://www.prisma.io/docs/reference/api-reference/error-reference#error-codes
+    // Errorcode P2002 is unique constraint, which is the only "known" error we should have when creating an account
+    if (e.code === 'P2002') {
+      res
+        .status(400)
+        .json({ error: true, message: 'That user already exists.' });
+    } else {
+      // log the error to the server console
+      console.error(e);
+      res.status(400).json({ error: true, message: 'Unknown Error occurred' });
+    }
+  }
+});
+
+export default router;
