@@ -40,5 +40,10 @@ app.use(passport.initialize());
 // add the subrouters
 app.use(usersRouter);
 
+// add one test route
+// app.get('/test', async (req, res) => {
+//   return res.json({ message: 'pass' });
+// });
+
 // export the app so it can be used for testing
 export default app;
