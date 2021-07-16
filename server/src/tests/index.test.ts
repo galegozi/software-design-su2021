@@ -3,8 +3,17 @@ import supertest from 'supertest';
 import 'setimmediate';
 import { createSignedJWTForUser } from '../users/auth';
 const request = supertest(app);
+import * as CONFIG from '../config';
 
 import jwt from 'jsonwebtoken';
+
+describe('server runs', () => {
+  it(`doesn't crash`, async done => {
+    const { main } = await import('../app');
+    expect(() => main(3002)).not.toThrow();
+    done();
+  });
+});
 
 describe('Auth utils', () => {
   it('returns a proper JWT given an id and username', done => {
@@ -79,6 +88,44 @@ describe('POST /register', () => {
   //     .send({ username: 'giraffesyo', password: 'abc123' })
   //     .expect(201, done);
   // });
+});
+
+describe('UNAUTHENTICATED GET /userinfo', () => {
+  it('properly rejects unauthenticated requests', async done => {
+    const res = await request.get('/userinfo');
+    expect(res.status).toBe(401);
+    done();
+  });
+  it('rejects requests for non-existant but verified users (deleted users)', async done => {
+    const token = jwt.sign(
+      {
+        iss: CONFIG.JWTOptions.issuer,
+        aud: CONFIG.JWTOptions.audience,
+        sub: { id: -1, username: 'nonexistent' },
+      },
+      CONFIG.JWTOptions.secretOrKey!,
+      { expiresIn: CONFIG.JWT_EXPIRATION_TIME }
+    );
+    const header = `bearer ${token}`;
+    const res = await request.get('/userinfo').set('Authorization', header);
+    expect(res.status).toBe(401);
+    done();
+  });
+  it('rejects requests for invalid but SIGNED tokens ', async done => {
+    const token = jwt.sign(
+      {
+        iss: CONFIG.JWTOptions.issuer,
+        aud: CONFIG.JWTOptions.audience,
+        sub: { id: 'a', username: 'nonexistent' },
+      },
+      CONFIG.JWTOptions.secretOrKey!,
+      { expiresIn: CONFIG.JWT_EXPIRATION_TIME }
+    );
+    const header = `bearer ${token}`;
+    const res = await request.get('/userinfo').set('Authorization', header);
+    expect(res.status).toBe(500);
+    done();
+  });
 });
 
 describe('GET /userinfo', () => {
