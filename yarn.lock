@@ -1805,6 +1805,11 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
+"@types/setimmediate@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/setimmediate/-/setimmediate-1.0.2.tgz#021a36f2cae266be8180a5b2aa233cd5884b5721"
+  integrity sha512-JHonWbepiR1pwiYVz2rOK4mWrhlUcrJQaOSaq4VYlfuhLrPlY1EayGjt0tXemCr8eBdVzvLeYejRCb/0Z/XuiQ==
+
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
