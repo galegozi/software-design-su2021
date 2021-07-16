@@ -4,7 +4,10 @@ You will need to:
 
 1. Install Node.js
 2. Install Yarn: `npm -g install yarn`
-3. Change directory into `server` and run `yarn`, this will the dependencies of the backend.
-4. Start the backend, with `yarn start` (alternative: `yarn watch` then `npx nodemon dist\index.js`)
-5. Change directory into `web` and run `yarn`, this will install the dependencies of the frontend.
-6. Start the front end in development mode, `yarn dev`
+3. Run `yarn` from the root directory
+4. Run `yarn dev`
+
+This project uses Yarn Workspaces, if you just want to start a single project, use the `yarn workspace` command:
+
+- For the front end: `yarn workspace web dev`
+- For the server: `yarn workspace server start`
