@@ -3,32 +3,10 @@
 import Layout from '../components/Layout'
 import React, { useState } from 'react'
 import { useAlert } from 'react-alert'
-import axios from 'axios'
 import { useEffect } from 'react'
 import { useUser } from '../hooks/useUser'
 import { useRouter } from 'next/dist/client/router'
-
-const loadUserInfo = async () => {
-  try {
-    const response = await axios.get('http://localhost:3001/userInfo')
-    const name = response.data.name
-    const addr1 = response.data.addr1
-    const addr2 = response.data.addr2
-    const city = response.data.city
-    const state = response.data.state
-    const zipCode = response.data.zipCode
-    console.log(name)
-  } catch (e) {
-    console.error(e?.response?.data)
-    const message = e?.response?.data?.message
-    if (message) {
-      //alert.error(message);
-    } else {
-      // show generic message
-      //alert.error("Uknown error occured during loading user profile");
-    }
-  }
-}
+import apiclient from '../utils/apiclient'
 
 const ProfileManagement: React.FC<{
   user: ReturnType<typeof useUser>['user']
@@ -44,7 +22,7 @@ const ProfileManagement: React.FC<{
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
     try {
-      const response = await axios.post('http://localhost:3001/userInfo', {
+      const response = await apiclient.post('http://localhost:3001/userInfo', {
         name,
         addr1,
         addr2,
@@ -70,7 +48,7 @@ const ProfileManagement: React.FC<{
   useEffect(() => {
     ;(async () => {
       try {
-        const response = await axios.get('http://localhost:3001/userInfo')
+        const response = await apiclient.get('http://localhost:3001/userInfo')
         const {
           name: loaded_name,
           addr1: loaded_addr1,

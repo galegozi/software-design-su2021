@@ -10,10 +10,10 @@ export const passportJWTStrategy = (passport:PassportStatic) => {
     new JWTStrategy(CONFIG.JWTOptions, async (jwt_payload, done) => {
       try {
         const user = await prisma.usercredentials.findUnique({
-          where: { id: jwt_payload.sub },
+          where: { id: jwt_payload.sub.id },
         });
         if (user) {
-          return done(null, user);
+          return done(null, {username: user.username, id: user.id});
         } else {
           return done(null, false);
         }
