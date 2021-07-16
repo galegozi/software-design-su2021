@@ -10,14 +10,13 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
-let ssl = true;
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 // if (process.env.NODE_ENV === 'production') {
 //   ssl = true
 // }
 
 async function run() {
+  let ssl = true;
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   const options = parse(process.env.DATABASE_URL);
 
   /** @type import('knex').PgConnectionConfig */
@@ -38,7 +37,9 @@ async function run() {
   await dbms.close();
 }
 
-run().catch(e => {
+run().catch((e) => {
   console.error(e);
   process.exit(1);
 });
+
+module.exports = run;

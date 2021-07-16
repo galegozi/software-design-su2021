@@ -16,7 +16,7 @@
     "migrate": "node -r dotenv/config  ./src/database/migrate.js",
     "watch": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test",
+    "test": "tsdx test --forceExit",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",

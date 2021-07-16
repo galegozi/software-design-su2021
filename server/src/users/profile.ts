@@ -4,7 +4,7 @@ const prisma = DBClient.getInstance().prisma;
 
 const router = Router();
 
-router.post('/userInfo', async (req, res) => {
+router.post('/userinfo', async (req, res) => {
   // get the user updated profile out of the request
   const { name, addr1, addr2, city, state, zipCode } = req.body;
   //validation
@@ -13,6 +13,7 @@ router.post('/userInfo', async (req, res) => {
     return res.status(400).json({ error: true, message: 'Name is too long' });
   }
   //addr1 must have at least 5 characters
+  console.log('length is ' + addr1.length);
   if (addr1.length < 5) {
     return res
       .status(400)
@@ -95,7 +96,7 @@ router.post('/userInfo', async (req, res) => {
   // response with success or error
 });
 
-router.get('/userInfo', async (req, res) => {
+router.get('/userinfo', async (req, res) => {
   //get user information to display on profile page load
   // assuming that the username is given by login part. It is hard coded for now
   const username = 'quannguyen';

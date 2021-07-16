@@ -7,6 +7,8 @@ if (!process.env.JWT_SECRET) {
   console.error(
     "Please create JWT_SECRET environment variable with crypto.randomBytes(64).toString('hex');"
   );
+  // console.log(process.exit);
+  process.exit(1);
 }
 
 import * as CONFIG from '../config';
@@ -14,9 +16,10 @@ import * as CONFIG from '../config';
 const router = Router();
 const prisma = DBClient.getInstance().prisma;
 
-const saltRounds = 10; // salt rounds for password hashing
-
-const createSignedJWTForUser = (user: { id: number; username: string }) => {
+export const createSignedJWTForUser = (user: {
+  id: number;
+  username: string;
+}) => {
   const token = jwt.sign(
     {
       sub: user,
@@ -47,7 +50,7 @@ router.post('/login', async (req, res) => {
       where: { username },
     });
     if (!user) {
-      return res.status(400).json({ error: true, message: 'User not found' });
+      return res.status(401).json({ error: true, message: 'User not found' });
     }
     // compare the password
     const authenticated = await bcrypt.compare(password, user.password);
@@ -81,7 +84,7 @@ router.post('/register', async (req, res) => {
 
   try {
     // hash the password
-    const hashed = await bcrypt.hash(password, saltRounds);
+    const hashed = await bcrypt.hash(password, CONFIG.saltRounds);
     // now that we've hashed the password, remove the memory of the plaintext password
     password = null;
     delete req.body.password;
