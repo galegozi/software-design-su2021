@@ -6,6 +6,11 @@ import React, { SetStateAction, useState } from 'react'
 import classNames from '../utils/classNames'
 import { useAlert, AlertManager } from 'react-alert'
 import localforage from 'localforage'
+import { useUser } from '../hooks/useUser'
+import { useEffect } from 'react'
+import { route } from 'next/dist/next-server/server/router'
+import jwtDecode from 'jwt-decode'
+import { Token } from './_app'
 
 const tabs = [
   { name: 'login', href: '#' },
@@ -56,15 +61,15 @@ const Tabs: React.FC<ITabsComponentProps> = ({ setActiveTab, activeTab }) => {
 
 interface ITabProps {
   alert: AlertManager
+  setTab?: React.Dispatch<SetStateAction<string>>
+  login?: (username: string, id: number) => void
 }
-const SignIn: React.FC<ITabProps> = ({ alert }) => {
+const SignIn: React.FC<ITabProps> = ({ alert, login }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    // TODO: Send username and password to the backend for verification
-    // TODO: Set UI to loading state
     e.preventDefault()
     try {
       const token = await axios
@@ -72,6 +77,9 @@ const SignIn: React.FC<ITabProps> = ({ alert }) => {
         .then((r) => r.data)
       alert.success('Logged in successfully')
       await localforage.setItem('token', token)
+      const decoded: Token = jwtDecode(token) as Token
+      const id = decoded.sub.id
+      login(username, id)
       router.push('/quote')
     } catch (e) {
       if (e?.response?.data?.message) {
@@ -81,8 +89,6 @@ const SignIn: React.FC<ITabProps> = ({ alert }) => {
         console.error(e)
       }
     }
-    // FIXME: Don't just redirect
-    // router.push('/quote')
   }
 
   return (
@@ -144,7 +150,7 @@ const SignIn: React.FC<ITabProps> = ({ alert }) => {
   )
 }
 
-const Register: React.FC<ITabProps> = ({ alert }) => {
+const Register: React.FC<ITabProps> = ({ alert, setTab }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
@@ -157,16 +163,26 @@ const Register: React.FC<ITabProps> = ({ alert }) => {
     if (password === password2) {
       handleRegistration()
     } else {
-      // TODO: show an error message that the passwords don't match
+      alert.error(`Passwords don't match`)
       // We should consider this link: https://www.itsolutionstuff.com/post/password-and-confirm-password-validation-in-reactexample.html
-      console.error("passwords don't match")
     }
   }
 
-  const handleRegistration = () => {
-    // TODO: send registration to back in, set UI to loading state
-    // FIXME: Don't just redirect to profile
-    router.push('/profile')
+  const handleRegistration = async () => {
+    // TODO: send registration to backend , set UI to loading state
+    try {
+      await axios.post('http://localhost:3001/register', {
+        username,
+        password,
+      })
+      alert.success('Registration successful')
+      // redirect to login tab so they can login
+      setTab('login')
+    } catch (e) {
+      const msg = e?.response?.data?.message
+      console.error(msg)
+      alert.error(msg)
+    }
   }
 
   return (
@@ -251,7 +267,17 @@ const Register: React.FC<ITabProps> = ({ alert }) => {
 
 const IndexPage = () => {
   const [activeTab, setActiveTab] = useState('login')
+  const { user, login } = useUser()
+  const router = useRouter()
   const alert = useAlert()
+
+  // handle if the user directly navigated to this page but they're already logged in
+  useEffect(() => {
+    if (!user.loading && user.username) {
+      router.push('/quote')
+    }
+  }, [user])
+
   return (
     <div className='bg-fuel h-screen'>
       <div className='h-full container mx-auto flex justify-center items-center'>
@@ -259,9 +285,9 @@ const IndexPage = () => {
           <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
           <div className='p-10'>
             {activeTab === 'login' ? (
-              <SignIn alert={alert} />
+              <SignIn login={login} alert={alert} />
             ) : (
-              <Register alert={alert} />
+              <Register setTab={setActiveTab} alert={alert} />
             )}
           </div>
         </div>

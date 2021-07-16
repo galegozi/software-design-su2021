@@ -1,33 +1,37 @@
-import Head from "next/head";
-import Link from "next/link";
+import Head from 'next/head'
+import Link from 'next/link'
+import { useUser } from '../hooks/useUser'
 
 const LoggedInLinks = [
-  { href: "/quote", name: "Get Quote" },
-  { href: "/profile", name: "Profile" },
-];
+  { href: '/quote', name: 'Get Quote' },
+  { href: '/profile', name: 'Profile' },
+]
 
 const Layout: React.FC = ({ children }) => {
+  const { user } = useUser()
   return (
     <>
       <Head>
         <title>Fuel Quotes App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
       <div>
-        <nav className="bg-gray-900 py-2 text-white flex justify-between">
-          <div className="hidden sm:block"></div>
+        <nav className='bg-gray-900 py-2 text-white flex justify-between'>
+          <div className='hidden sm:block pl-3'>
+            {!user.loading && user.username && `Welcome, ${user.username}`}
+          </div>
           <div>
             {LoggedInLinks.map(({ name, href }, index) => (
               <Link key={`nav-link-${index}`} href={href}>
-                <a className="text-xl font-medium hover:opacity-80 p-4">
+                <a className='text-xl font-medium hover:opacity-80 p-4'>
                   {name}
                 </a>
               </Link>
             ))}
           </div>
           <div>
-            <Link href="/logout">
-              <a className="text-xl font-medium hover:opacity-80 mr-5">
+            <Link href='/logout'>
+              <a className='text-xl font-medium hover:opacity-80 mr-5'>
                 Logout
               </a>
             </Link>
@@ -36,7 +40,7 @@ const Layout: React.FC = ({ children }) => {
         {children}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

@@ -12,13 +12,14 @@ import { useEffect } from "react"
 import localforage from "localforage"
 import jwtDecode from "jwt-decode"
 import { useState } from "react"
+import { useCallback } from "react"
 
 const AlertOptions = {
   position: AlertPositions.TOP_CENTER,
   timeout: 3000,
 };
 
-interface Token {
+export interface Token {
   iss: string
   aud: string
   exp: number
@@ -46,8 +47,16 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     
   })()
   },[] )
+
+  const logout = useCallback(() => {
+    setUser({username: null, id: null, loading: false})
+  }, [])
+
+  const login = useCallback((username: string, id: number) => {
+    setUser({ username, id, loading: false })
+  }, [user])
   return (
-    <userContext.Provider value={user}><AlertProvider {...AlertOptions} template={AlertTemplate}>
+    <userContext.Provider value={{user, logout, login}}><AlertProvider {...AlertOptions} template={AlertTemplate}>
       <Component {...pageProps} />
     </AlertProvider></userContext.Provider>
   );
