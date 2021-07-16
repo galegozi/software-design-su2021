@@ -1,7 +1,7 @@
-import app from '../src/app';
+import app from '../app';
 import request from 'supertest';
 import 'setimmediate';
-import { createSignedJWTForUser } from '../src/users/auth';
+import { createSignedJWTForUser } from '../users/auth';
 
 import jwt from 'jsonwebtoken';
 
