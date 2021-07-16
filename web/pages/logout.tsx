@@ -10,7 +10,7 @@ const LogoutPage = () => {
     ;(async () => {
       await localforage.clear()
 
-      setTimeout(() => router.push('/'), 500)
+      setTimeout(() => (window.location.pathname = ''), 500)
     })()
   }, [])
   return (

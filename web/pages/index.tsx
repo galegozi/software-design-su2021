@@ -19,7 +19,11 @@ const IndexPage = () => {
     }
   }, [user])
 
-  return <Layout>Loading...</Layout>
+  return (
+    <div className='bg-fuel text-center text-4xl font-medium h-screen flex justify-center items-center'>
+      <h1 className='text-white'>Loading...</h1>
+    </div>
+  )
 }
 
 export default IndexPage
