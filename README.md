@@ -11,3 +11,9 @@ This project uses Yarn Workspaces, if you just want to start a single project, u
 
 - For the front end: `yarn workspace web dev`
 - For the server: `yarn workspace server start`
+
+# Testing
+
+To run the tests, run the command `yarn test`.
+
+To generate a coverage report, run the command `yarn test --coverage`.
