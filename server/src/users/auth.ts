@@ -100,7 +100,7 @@ router.post('/register', async (req, res) => {
         .json({ error: true, message: 'That user already exists.' });
     } else {
       // log the error to the server console
-      console.error(e);
+      // console.error(e);
       res.status(400).json({ error: true, message: 'Unknown Error occurred' });
     }
   }

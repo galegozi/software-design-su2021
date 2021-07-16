@@ -10,7 +10,37 @@ describe('POST /login', () => {
   });
 });
 
+describe('POST /register', () => {
+  it('properly handles empty username', async done => {
+    const res = await request(app)
+      .post('/register')
+      .send({ password: 'abc123' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe('Unknown Error occurred');
+    done();
+    // expect(res.body.message).toBe('')
+  });
 
+  it('properly handles empty password', async done => {
+    const res = await request(app)
+      .post('/register')
+      .send({ username: 'giraffesyo' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe('Unknown Error occurred');
+    done();
+  });
+
+  // it('properly handles empty password', async done => {
+  //   const res = await request(app)
+  //     .post('/register')
+  //     .send({ username: 'giraffesyo', password: 'abc123' })
+  //     .expect(201, done);
+  // });
+});
+
+describe('GET /userinfo', () => {});
+
+describe('POST /userinfo', () => {});
 
 // describe('GET /user', function() {
 //   it('responds with json', function(done) {
