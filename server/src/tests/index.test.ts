@@ -1,7 +1,8 @@
 import app from '../app';
-import request from 'supertest';
+import supertest from 'supertest';
 import 'setimmediate';
 import { createSignedJWTForUser } from '../users/auth';
+const request = supertest(app);
 
 import jwt from 'jsonwebtoken';
 
@@ -25,31 +26,29 @@ describe('Auth utils', () => {
 
 describe('POST /login', () => {
   it('rejects empty requests', async done => {
-    request(app)
-      .post('/login')
-      .expect(400, done);
+    request.post('/login').expect(400, done);
   });
 
   it('rejects incorrect password', async done => {
-    request(app)
+    request
       .post('/login')
       .send({ username: 'giraffesyo', password: 'abc1234' })
       .expect(401, done);
   });
   it('rejects unknown usernames', async done => {
-    request(app)
+    request
       .post('/login')
       .send({ username: 'abccccc', password: 'abc1234' })
       .expect(401, done);
   });
   it('rejects rejects empty username', async done => {
-    request(app)
+    request
       .post('/login')
       .send({ password: 'abc1234' })
       .expect(400, done);
   });
   it('rejects rejects empty password', async done => {
-    request(app)
+    request
       .post('/login')
       .send({ username: 'abc1234' })
       .expect(400, done);
@@ -58,9 +57,7 @@ describe('POST /login', () => {
 
 describe('POST /register', () => {
   it('properly handles empty username', async done => {
-    const res = await request(app)
-      .post('/register')
-      .send({ password: 'abc123' });
+    const res = await request.post('/register').send({ password: 'abc123' });
     expect(res.status).toBe(400);
     expect(res.body.message).toBe('Unknown Error occurred');
     done();
@@ -68,7 +65,7 @@ describe('POST /register', () => {
   });
 
   it('properly handles empty password', async done => {
-    const res = await request(app)
+    const res = await request
       .post('/register')
       .send({ username: 'giraffesyo' });
     expect(res.status).toBe(400);
@@ -77,7 +74,7 @@ describe('POST /register', () => {
   });
 
   // it('properly handles empty password', async done => {
-  //   const res = await request(app)
+  //   const res = await request
   //     .post('/register')
   //     .send({ username: 'giraffesyo', password: 'abc123' })
   //     .expect(201, done);
@@ -85,23 +82,44 @@ describe('POST /register', () => {
 });
 
 describe('GET /userinfo', () => {
+  let token;
+  beforeAll(async done => {
+    const res = await request
+      .post('/login')
+      .send({ username: 'quannguyen', password: 'password' });
+    token = res.body;
+    done();
+  });
+
   it('properly returns user info', async done => {
-    const res = await request(app).get('/userinfo');
+    const res = await request
+      .get('/userinfo')
+      .set('Authorization', `bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('name');
-    expect(res.body).toHaveProperty('zip');
+    expect(res.body).toHaveProperty('zipCode');
     expect(res.body).toHaveProperty('city');
     expect(res.body).toHaveProperty('state');
-    expect(res.body).toHaveProperty('address');
-    expect(res.body).toHaveProperty('address2');
+    expect(res.body).toHaveProperty('addr1');
+    expect(res.body).toHaveProperty('addr2');
     done();
   });
 });
 
 describe('POST /userinfo', () => {
+  let token;
+  beforeAll(async done => {
+    const res = await request
+      .post('/login')
+      .send({ username: 'quannguyen', password: 'password' });
+    token = res.body;
+    console.log(token);
+    done();
+  });
   it('rejects names longer than 100 characters', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name:
           'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 110 A characters
@@ -114,8 +132,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('rejects addresses shorter than 5 characters', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925', // 3 characters
@@ -127,8 +146,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('rejects invalid addresses', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925;;;;!', // invalid characters
@@ -140,8 +160,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('rejects invalid addresses for address 2', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925 Eldridge Pkwy',
@@ -153,8 +174,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('rejects invalid characters in city name', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925 Eldridge Pkwy',
@@ -166,8 +188,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('rejects short city names', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925 Eldridge Pkwy',
@@ -179,8 +202,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('rejects zip codes that are longer than 5 characters', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925 Eldridge Pkwy',
@@ -192,8 +216,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('rejects zip codes that are shorter than 5 characters', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925 Eldridge Pkwy',
@@ -205,8 +230,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('rejects zip codes that contain letters', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925 Eldridge Pkwy',
@@ -218,8 +244,9 @@ describe('POST /userinfo', () => {
       .expect(400, done);
   });
   it('successfully updates user', async done => {
-    request(app)
+    request
       .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925 Eldridge Pkwy',
@@ -244,7 +271,7 @@ describe('POST /userinfo', () => {
 
 // describe('GET /user', function() {
 //   it('responds with json', function(done) {
-//     request(app)
+//     request
 //       .get('/login')
 //       .expect(200, done);
 //   });
