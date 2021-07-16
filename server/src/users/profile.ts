@@ -1,63 +1,61 @@
-import DBClient from '../database/client';
-import { Router } from 'express';
-import passport from 'passport';
-const prisma = DBClient.getInstance().prisma;
+import DBClient from '../database/client'
+import { Router } from 'express'
+import passport from 'passport'
+const prisma = DBClient.getInstance().prisma
 
-const router = Router();
+const router = Router()
 
 router.post(
   '/userinfo',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    const { id, username } = req.user as { username: string; id: number };
+    const { id, username } = req.user as { username: string; id: number }
     // get the user updated profile out of the request
-    const { name, addr1, addr2, city, state, zipCode } = req.body;
+    const { name, addr1, addr2, city, state, zipCode } = req.body
     //validation
     //name must have less than 100 characters
     if (name.length > 100) {
-      return res.status(400).json({ error: true, message: 'Name is too long' });
+      return res.status(400).json({ error: true, message: 'Name is too long' })
     }
     //addr1 must have at least 5 characters
     if (addr1.length < 5) {
       return res
         .status(400)
-        .json({ error: true, message: 'Address 1 is too short' });
+        .json({ error: true, message: 'Address 1 is too short' })
     }
     //addr1 must contain alphanumerical, '.', '-' and ' ' characters only
     if (/[^A-Za-z0-9'\.\-\s\,\#]/.test(addr1)) {
       return res
         .status(400)
-        .json({ error: true, message: 'Address 1 has invalid character' });
+        .json({ error: true, message: 'Address 1 has invalid character' })
     }
     //if addr2 is provided, it must contain alphanumerical, '.', '-' and ' ' characters only
     if (addr2?.length > 0) {
       if (/[^A-Za-z0-9'\.\-\s\,\ ]/.test(addr2)) {
         return res
           .status(400)
-          .json({ error: true, message: 'Address 2 has invalid character' });
+          .json({ error: true, message: 'Address 2 has invalid character' })
       }
     }
     //city must have at least 3 characters, alphabetical only
     if (city.length < 3) {
-      return res
-        .status(400)
-        .json({ error: true, message: 'City is too short' });
+      return res.status(400).json({ error: true, message: 'City is too short' })
     }
     if (/[^a-zA-Z]/.test(city)) {
       return res
         .status(400)
-        .json({ error: true, message: 'City must contain letter only' });
+        .json({ error: true, message: 'City must contain letter only' })
     }
     //zipCode must have 5 characters, numerical only
     if (/[^0-9]/.test(zipCode)) {
       return res
         .status(400)
-        .json({ error: true, message: 'Zip Code must contain digit only' });
+        .json({ error: true, message: 'Zip Code must contain digit only' })
     }
     if (zipCode.length != 5) {
       return res
         .status(400)
-        .json({ error: true, message: 'Zip Code must have 5 digits' });
+        .json({ error: true, message: 'Zip Code must have 5 digits' })
     }
 
     // validate that every fields are correct
@@ -82,16 +80,16 @@ router.post(
           zip: zipCode,
         },
         where: { user_id: id },
-      });
-      return res.status(200).json({ error: false, message: 'User Updated' });
+      })
+      return res.status(200).json({ error: false, message: 'User Updated' })
     } catch (e) {
-      console.error(e);
+      console.error(e)
       return res
         .status(400)
-        .json({ error: true, message: 'Unknown Error occurred' });
+        .json({ error: true, message: 'Unknown Error occurred' })
     }
   }
-);
+)
 
 router.get(
   '/userinfo',
@@ -100,18 +98,18 @@ router.get(
     //get user information to display on profile page load
     // assuming that the username is given by login part. It is hard coded for now
 
-    const { username } = req.user as { username: string; id: number };
+    const { username } = req.user as { username: string; id: number }
     // validate that every fields are correct
     //try
     try {
       const user = await prisma.usercredentials.findFirst({
         where: { username },
-      });
+      })
 
       if (!user) {
-        return res.status(400).json({ error: true, message: 'User not found' });
+        return res.status(400).json({ error: true, message: 'User not found' })
       }
-      const id = user.id;
+      const id = user.id
       const userInfo = await prisma.clientinformation.findUnique({
         select: {
           name: true,
@@ -122,7 +120,7 @@ router.get(
           zip: true,
         },
         where: { user_id: id },
-      });
+      })
       return res.status(200).json({
         name: userInfo?.name,
         city: userInfo?.city,
@@ -130,15 +128,15 @@ router.get(
         zipCode: userInfo?.zip,
         addr1: userInfo?.address,
         addr2: userInfo?.address2,
-      });
+      })
     } catch (e) {
-      console.error(e);
+      console.error(e)
       return res.status(400).json({
         error: true,
         message: 'Unknown Error occurred while trying to load user profile',
-      });
+      })
     }
   }
-);
+)
 
-export default router;
+export default router

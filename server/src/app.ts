@@ -1,31 +1,32 @@
-import express from 'express';
-import cors from 'cors';
-import { json as bodyParserJson } from 'body-parser';
-import passport from 'passport';
-import * as CONFIG from './config';
+import express from 'express'
+import cors from 'cors'
+import { json as bodyParserJson } from 'body-parser'
+import passport from 'passport'
+import * as CONFIG from './config'
 // routers
-import usersRouter from './users';
-import { passportJWTStrategy } from './utils/auth';
+import usersRouter from './users'
+import { passportJWTStrategy } from './utils/auth'
 
 // instantiate express app
-const app = express();
+const app = express()
 
 // add middleware
-app.use(bodyParserJson());
-app.use(cors());
-app.use(passport.initialize());
+app.use(bodyParserJson())
+app.use(cors())
+app.use(passport.initialize())
 
 // Add strategy to passport
-passportJWTStrategy(passport);
+passportJWTStrategy(passport)
 
 // add the subrouters
-app.use(usersRouter);
+app.use(usersRouter)
 
 export const main = (port?: number) => {
-  app.listen(port || CONFIG.port, () => {
-    console.log(`Server listening at http://localhost:${port || CONFIG.port}`);
-  });
-};
+  const server = app.listen(port || CONFIG.port, () => {
+    console.log(`Server listening at http://localhost:${port || CONFIG.port}`)
+  })
+  return server
+}
 
 // export the app so it can be used for testing
-export default app;
+export default app
