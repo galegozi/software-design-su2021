@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.05% </span>
+                <span class="strong">18.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/42</span>
+                <span class='fraction'>8/44</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>0/22</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.05% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/38</span>
+                <span class='fraction'>8/40</span>
             </div>
         
             
@@ -185,7 +185,18 @@
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -197,18 +208,29 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -324,19 +346,30 @@ router.post(
     '/quote',
     passport.authenticate('jwt', { session: false }),
 <span class="fstat-no" title="function not covered" >    async (r</span>eq, res<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >) =&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >        if( !req || !req.user || !req.body || !req.body.gallon || !req.body.deliveryDate ) {</span>
+<span class="cstat-no" title="statement not covered" >            res.status(400).send({</span>
+                error: true,
+                message: "A username and a body with gallons and delivery date are required."
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if( !Number(req.body.gallon) || req.body.gallon &lt; 0 || !Number.isInteger(req.body.gallon) ) {</span>
+<span class="cstat-no" title="statement not covered" >            res.status(400).send({</span>
+                error: true,
+                message: "Gallons must be a positive integer."
+            });
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        if( !new Date(req.body.deliveryDate) ) {</span>
+<span class="cstat-no" title="statement not covered" >            res.status(400).send({</span>
+                error: true,
+                message: "Delivery date is not a valid date."
+            });
+        }
+&nbsp;
         const <span class="cstat-no" title="statement not covered" >{ id, username } = r</span>eq.user as { username: string; id: number };
 &nbsp;
         const <span class="cstat-no" title="statement not covered" >{ gallon, deliveryDate } = r</span>eq.body;
-<span class="cstat-no" title="statement not covered" >        console.log("Hello");</span>
-<span class="cstat-no" title="statement not covered" >        console.log(req.body);</span>
-&nbsp;
-        //validation for galReq, loc, date
-<span class="cstat-no" title="statement not covered" >        if (!gallon || !deliveryDate) {</span>
-<span class="cstat-no" title="statement not covered" >            return res.status(400).json({</span>
-                error: true,
-                message: "Please fill all the fields\n" + gallon + "\n" + deliveryDate
-            });
-        }
 &nbsp;
         const <span class="cstat-no" title="statement not covered" >currPrice = 1.5;</span>
 &nbsp;
@@ -357,13 +390,13 @@ router.post(
                 });
 &nbsp;
                 //todo: compute location factor
-                var <span class="cstat-no" title="statement not covered" >locFactor = userinfo.state != "TX" ? 0.04 : 0.02; </span>//assume 4% because out of state. Need to do a lookup for instate locations.
+                var <span class="cstat-no" title="statement not covered" >locFactor = userinfo.state != "TX" ? 0.04 : 0.02;</span>
 &nbsp;
-                var <span class="cstat-no" title="statement not covered" >histFactor = prevQuotes ? 0.01: 0.0 /</span>/assume 0% because no history. Need to do a lookup for history.
+                var <span class="cstat-no" title="statement not covered" >histFactor = prevQuotes ? 0.01: 0.0</span>
 &nbsp;
-                var <span class="cstat-no" title="statement not covered" >bigFactor = gallon &gt; 1000 ? 0.02 : 0.03; </span>//assume 0% because no big deal. Need to do a lookup for big deal.
+                var <span class="cstat-no" title="statement not covered" >bigFactor = gallon &gt; 1000 ? 0.02 : 0.03;</span>
 &nbsp;
-                const <span class="cstat-no" title="statement not covered" >profitFactor = 0.1; </span>//assume 10% profit
+                const <span class="cstat-no" title="statement not covered" >profitFactor = 0.1;</span>
 &nbsp;
                 var <span class="cstat-no" title="statement not covered" >margin = (locFactor - histFactor + bigFactor + profitFactor) * currPrice;</span>
                 var <span class="cstat-no" title="statement not covered" >ppg = margin + currPrice;</span>
@@ -448,7 +481,7 @@ export default router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sat Jul 17 2021 00:43:03 GMT-0500 (Central Daylight Time)
+                at Sat Jul 17 2021 14:15:05 GMT-0500 (Central Daylight Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

@@ -1,5 +1,5 @@
 {
-  // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
+  // see https://www.typescriptlang.org/tsconfig to better understand tsconfig files
   "include": ["src", "types", "src/tests"],
   "compilerOptions": {
     "module": "esnext",
@@ -17,7 +17,7 @@
     // linter checks for common issues
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    // noUnused* overlap with @typescript-eslint/no-unused-vars, can disable if duplicative
+    // noUnused* overlap with @typescript-eslint/no-unused-vars, can disable if duplicate
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitAny": false,

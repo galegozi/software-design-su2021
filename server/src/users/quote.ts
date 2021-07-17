@@ -9,19 +9,30 @@ router.post(
     '/quote',
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
+        if( !req || !req.user || !req.body || !req.body.gallon || !req.body.deliveryDate ) {
+            res.status(400).send({
+                error: true,
+                message: "A username and a body with gallons and delivery date are required."
+            });
+        }
+
+        if( !Number(req.body.gallon) || req.body.gallon < 0 || !Number.isInteger(req.body.gallon) ) {
+            res.status(400).send({
+                error: true,
+                message: "Gallons must be a positive integer."
+            });
+        }
+
+        if( !new Date(req.body.deliveryDate) ) {
+            res.status(400).send({
+                error: true,
+                message: "Delivery date is not a valid date."
+            });
+        }
+
         const { id, username } = req.user as { username: string; id: number };
 
         const { gallon, deliveryDate } = req.body;
-        console.log("Hello");
-        console.log(req.body);
-
-        //validation for galReq, loc, date
-        if (!gallon || !deliveryDate) {
-            return res.status(400).json({
-                error: true,
-                message: "Please fill all the fields\n" + gallon + "\n" + deliveryDate
-            });
-        }
 
         const currPrice = 1.5;
 
@@ -42,13 +53,13 @@ router.post(
                 });
 
                 //todo: compute location factor
-                var locFactor = userinfo.state != "TX" ? 0.04 : 0.02; //assume 4% because out of state. Need to do a lookup for instate locations.
+                var locFactor = userinfo.state != "TX" ? 0.04 : 0.02;
 
-                var histFactor = prevQuotes ? 0.01: 0.0 //assume 0% because no history. Need to do a lookup for history.
+                var histFactor = prevQuotes ? 0.01: 0.0
 
-                var bigFactor = gallon > 1000 ? 0.02 : 0.03; //assume 0% because no big deal. Need to do a lookup for big deal.
+                var bigFactor = gallon > 1000 ? 0.02 : 0.03;
 
-                const profitFactor = 0.1; //assume 10% profit
+                const profitFactor = 0.1;
 
                 var margin = (locFactor - histFactor + bigFactor + profitFactor) * currPrice;
                 var ppg = margin + currPrice;

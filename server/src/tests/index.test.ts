@@ -331,3 +331,76 @@ describe('POST /userinfo', () => {
 //     done();
 //   });
 // });
+
+describe('POST /quote', () => {
+  let token
+  beforeAll(async done => {
+    const res = await request(app)
+      .post('/login')
+      .send({ username: 'asdf', password: 'asdf' })
+    token = res.body
+    done()
+  })
+  it('fails (lack of parameters)', async done => {
+    request(app)
+      .post('/quote')
+      .set('Authorization', `bearer ${token}`)
+      .expect(400, done);
+    done();
+  })
+
+  it('fails (no user)', async done => {
+    request(app)
+      .post('/quote')
+      .expect(401, done);
+    done();
+  })
+
+  it('succeeds', async done => {
+    request(app)
+      .post('/quote')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        gallon: 10,
+        deliveryDate: '2018-01-01',
+      })
+      .expect(200, done);
+    done();
+  })
+
+  it('fails (fractional gallons)', async done => {
+    request(app)
+      .post('/quote')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        gallon: 1.5,
+        deliveryDate: '2018-01-01',
+      })
+      .expect(400, done);
+    done();
+  })
+
+  it('fails (gallons not a number)', async done => {
+    request(app)
+      .post('/quote')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        gallon: 'asdf',
+        deliveryDate: '2018-01-01',
+      })
+      .expect(400, done);
+    done();
+  })
+
+  it('fails (bad delivery date)', async done => {
+    request(app)
+      .post('/quote')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        gallon: 10,
+        deliveryDate: 'hello',
+      })
+      .expect(400, done);
+    done();
+  })
+});
