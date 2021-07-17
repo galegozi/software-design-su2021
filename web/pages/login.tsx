@@ -164,7 +164,6 @@ const Register: React.FC<ITabProps> = ({ alert, setTab }) => {
       handleRegistration()
     } else {
       alert.error(`Passwords don't match`)
-      // We should consider this link: https://www.itsolutionstuff.com/post/password-and-confirm-password-validation-in-reactexample.html
     }
   }
 

@@ -39,7 +39,7 @@ const ProfileManagement: React.FC<{
         alert.error(message)
       } else {
         // show generic message
-        alert.error('unknown error occured')
+        alert.error('unknown error occurred')
       }
     }
   }
