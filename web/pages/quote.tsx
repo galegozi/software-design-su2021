@@ -40,14 +40,12 @@ const Table: React.FC<ITableProps> = ({ headers, rows }) => {
                     className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                     key={`row-${index}`}
                   >
-                    {Object.entries(row).map(([key, value]) => (
-                      <td
-                        className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                        key={`item-${index}-${key}`}
-                      >
-                        {value}
-                      </td>
-                    ))}
+                    <Td>{row.id}</Td>
+                    <Td>{new Date(row.quote_date).toDateString()}</Td>
+                    <Td>{row.gallons}</Td>
+                    <Td>{new Date(row.delivery_date).toDateString()}</Td>
+                    <Td>${row.price_per_gallon/100}</Td>
+                    <Td>${row.total_price/100}</Td>
                   </tr>
                 ))}
               </tbody>
@@ -59,6 +57,12 @@ const Table: React.FC<ITableProps> = ({ headers, rows }) => {
   );
 };
 
+const Td = ({ children }) => (
+  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+    {children}
+  </td>
+);
+
 const GetQuote = () => {
   console.log("GetQuote");
   const alert = useAlert();
@@ -69,8 +73,9 @@ const GetQuote = () => {
 
   useEffect(() => {
     (async () => {
-      const prev = await apiclient.get("http://localhost:3001/quoteinfo").then(
-        r => r.data.quotes);
+      const prev = await apiclient
+        .get("http://localhost:3001/quoteinfo")
+        .then((r) => r.data.quotes);
       console.log(prev);
       setPrevHist(prev);
     })();
@@ -191,10 +196,10 @@ const GetQuote = () => {
                     headers={[
                       "Quote ID",
                       "Date",
-                      "Gallon",
+                      "Gallons",
                       "Delivery Date",
                       "Price Per Gallon",
-                      "Total Ammount due",
+                      "Total Amount due",
                     ]}
                     rows={prevHist}
                     // rows={[
