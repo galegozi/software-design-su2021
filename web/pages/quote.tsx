@@ -59,20 +59,21 @@ const Table: React.FC<ITableProps> = ({ headers, rows }) => {
 };
 
 const GetQuote = () => {
+  console.log("GetQuote");
   const alert = useAlert();
   const [gallon, setGallon] = useState("");
-  const deliveryAddress = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [todayDate, setTodayDate] = useState("");
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
+    console.log("submitting");
     try {
       const response = await apiclient.post("http://localhost:3001/quote", {
         gallon,
-        deliveryAddress,
         deliveryDate,
       });
+      console.log(response);
       alert.success("Quote updated successfully");
       console.log(response);
     } catch (e) {
@@ -103,7 +104,7 @@ const GetQuote = () => {
               <div className="mt-8">
                 <span className="text-xl font-medium">Fuel Quote Form</span>
                 <div className="mt-6">
-                  <form className="space-y-6">
+                  <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                       <label
                         htmlFor="gallon"
@@ -132,7 +133,7 @@ const GetQuote = () => {
                       </label>
                       <div className="mt-1">
                         <label className="appearance-none bg-gray-200 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                          1800 Main Street, Houston, TX, 77083
+                          The location specified in your profile.
                         </label>
                       </div>
                     </div>
