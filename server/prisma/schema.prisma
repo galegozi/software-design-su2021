@@ -34,7 +34,9 @@ model fuelquote {
   user_id           Int
   gallons           Int
   price_per_gallon  Int
+  total_price       Int
   delivery_date     DateTime        @db.Date
+  quote_date        DateTime        @default(now()) @db.Date
   delivery_address  String          @db.VarChar(100)
   delivery_city     String          @db.VarChar(100)
   delivery_state    String          @db.VarChar(2)

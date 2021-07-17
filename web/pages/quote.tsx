@@ -7,6 +7,7 @@ import { useRouter } from "next/dist/client/router";
 import axios from "axios";
 import apiclient from "../utils/apiclient";
 import { useAlert } from "react-alert";
+import useSwr from "swr";
 
 interface ITableProps {
   headers: string[];
@@ -39,12 +40,12 @@ const Table: React.FC<ITableProps> = ({ headers, rows }) => {
                     className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
                     key={`row-${index}`}
                   >
-                    {row.map((item, item_index) => (
+                    {Object.entries(row).map(([key, value]) => (
                       <td
                         className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                        key={`item-${index}-${item_index}`}
+                        key={`item-${index}-${key}`}
                       >
-                        {item}
+                        {value}
                       </td>
                     ))}
                   </tr>
@@ -64,6 +65,16 @@ const GetQuote = () => {
   const [gallon, setGallon] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [todayDate, setTodayDate] = useState("");
+  const [prevHist, setPrevHist] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const prev = await apiclient.get("http://localhost:3001/quoteinfo").then(
+        r => r.data.quotes);
+      console.log(prev);
+      setPrevHist(prev);
+    })();
+  }, []);
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -178,17 +189,19 @@ const GetQuote = () => {
                 <div className="mt-6 text-xs text-center">
                   <Table
                     headers={[
+                      "Quote ID",
                       "Date",
                       "Gallon",
                       "Delivery Date",
                       "Price Per Gallon",
                       "Total Ammount due",
                     ]}
-                    rows={[
-                      ["06/23/2021", "20", "09/23/2021", "2", "40"],
-                      ["10/07/2020", "25", "01/25/2021", "2", "50"],
-                      ["02/28/2019", "40", "05/01/2019", "1.5", "60"],
-                    ]}
+                    rows={prevHist}
+                    // rows={[
+                    //   ["06/23/2021", "20", "09/23/2021", "2", "40"],
+                    //   ["10/07/2020", "25", "01/25/2021", "2", "50"],
+                    //   ["02/28/2019", "40", "05/01/2019", "1.5", "60"],
+                    // ]}
                   />
                 </div>
               </div>

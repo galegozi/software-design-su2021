@@ -62,7 +62,8 @@ router.post(
                         data: {
                             usercredentials: { connect: { id } },
                             gallons: Number(gallon),
-                            price_per_gallon: Math.ceil(ppg*100), 
+                            price_per_gallon: Math.ceil(ppg*100),
+                            total_price: storedPrice, 
                             delivery_date: new Date(deliveryDate),
                             delivery_address: userinfo.address,
                             delivery_city: userinfo.city,
@@ -93,39 +94,36 @@ router.post(
     }
 )
 
-// router.get(
-//     '/quoteinfo',
-//     passport.authenticate('jwt', { session: false }),
-//     async (req, res) => {
-//         const { id, username } = req.user as { username: string; id: number };
+router.get(
+    '/quoteinfo',
+    passport.authenticate('jwt', { session: false }),
+    async (req, res) => {
+        const { id, username } = req.user as { username: string; id: number };
 
-//         try {
-//             const quotes = await prisma.fuelquote.findMany({
-//                 select: {
-//                     galReq: "SUM(galReq)",
-//                     ppg: "SUM(ppg)",
-//                     date: "SUM(date)",
+        try {
+            const quotes = await prisma.fuelquote.findMany({
+                select: {
+                    id: true,
+                    quote_date: true,
+                    gallons: true,
+                    delivery_date: true,
+                    price_per_gallon: true,
+                    total_price: true
+                },
+                where: { user_id: id }
+            });
 
-//                     address: "SUM(address)",
-//                     city: "SUM(city)",
-//                     state: "SUM(state)",
-//                     zip: "SUM(zip)",
-//                     address2: "SUM(address2)"
-//                 },
-//                 where: { user_id: id }
-//             });
-
-//             return res.status(200).json({
-//                 quotes
-//             });
-//         }
-//         catch (e) {
-//             return res.status(500).json({
-//                 error: true,
-//                 message: "An error occurred while fetching the quotes"
-//             });
-//         }
-//     }
-// )
+            return res.status(200).json({
+                quotes
+            });
+        }
+        catch (e) {
+            return res.status(500).json({
+                error: true,
+                message: "An error occurred while fetching the quotes"
+            });
+        }
+    }
+)
 
 export default router;
