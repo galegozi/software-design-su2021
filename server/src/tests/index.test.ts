@@ -157,7 +157,6 @@ describe('POST /userinfo', () => {
       .post('/login')
       .send({ username: 'quannguyen', password: 'password' })
     token = res.body
-    console.log(token)
     done()
   })
   it('rejects names longer than 100 characters', async done => {
@@ -339,21 +338,19 @@ describe('POST /quote', () => {
       .post('/login')
       .send({ username: 'asdf', password: 'asdf' })
     token = res.body
-    done()
+    done();
   })
   it('fails (lack of parameters)', async done => {
     request(app)
       .post('/quote')
       .set('Authorization', `bearer ${token}`)
+      .send({})
       .expect(400, done);
-    done();
   })
-
   it('fails (no user)', async done => {
     request(app)
       .post('/quote')
       .expect(401, done);
-    done();
   })
 
   it('succeeds', async done => {
@@ -365,7 +362,6 @@ describe('POST /quote', () => {
         deliveryDate: '2018-01-01',
       })
       .expect(200, done);
-    done();
   })
 
   it('fails (fractional gallons)', async done => {
@@ -377,7 +373,6 @@ describe('POST /quote', () => {
         deliveryDate: '2018-01-01',
       })
       .expect(400, done);
-    done();
   })
 
   it('fails (gallons not a number)', async done => {
@@ -389,7 +384,6 @@ describe('POST /quote', () => {
         deliveryDate: '2018-01-01',
       })
       .expect(400, done);
-    done();
   })
 
   it('fails (bad delivery date)', async done => {
@@ -401,6 +395,29 @@ describe('POST /quote', () => {
         deliveryDate: 'hello',
       })
       .expect(400, done);
-    done();
   })
 });
+
+describe('GET /quoteinfo', () => {
+  let token
+  beforeAll(async done => {
+    const res = await request(app)
+      .post('/login')
+      .send({ username: 'asdf', password: 'asdf' })
+    token = res.body
+    done();
+  })
+
+  it('fails (no user)', async done => {
+    request(app)
+      .get('/quoteinfo')
+      .expect(401, done);
+  })
+
+  it('succeeds', async done => {
+    request(app)
+      .get('/quoteinfo')
+      .set('Authorization', `bearer ${token}`)
+      .expect(200, done);
+  })
+})

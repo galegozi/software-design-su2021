@@ -10,21 +10,21 @@ router.post(
     passport.authenticate('jwt', { session: false }),
     async (req, res) => {
         if( !req || !req.user || !req.body || !req.body.gallon || !req.body.deliveryDate ) {
-            res.status(400).send({
+            return res.status(400).send({
                 error: true,
                 message: "A username and a body with gallons and delivery date are required."
             });
         }
 
         if( !Number(req.body.gallon) || req.body.gallon < 0 || !Number.isInteger(req.body.gallon) ) {
-            res.status(400).send({
+            return res.status(400).send({
                 error: true,
                 message: "Gallons must be a positive integer."
             });
         }
 
-        if( !new Date(req.body.deliveryDate) ) {
-            res.status(400).send({
+        if( new Date(req.body.deliveryDate).toString() === "Invalid Date" ) {
+            return res.status(400).send({
                 error: true,
                 message: "Delivery date is not a valid date."
             });
@@ -43,7 +43,7 @@ router.post(
             if (!userinfo) {
                 return res.status(400).json({
                     error: true,
-                    message: "No client information has been supplied."
+                    message: "Information must be added to the profile before requesting quotes."
                 });
             }
 
