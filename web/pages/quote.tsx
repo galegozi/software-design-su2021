@@ -44,8 +44,8 @@ const Table: React.FC<ITableProps> = ({ headers, rows }) => {
                     <Td>{new Date(row.quote_date).toDateString()}</Td>
                     <Td>{row.gallons}</Td>
                     <Td>{new Date(row.delivery_date).toDateString()}</Td>
-                    <Td>${row.price_per_gallon/100}</Td>
-                    <Td>${row.total_price/100}</Td>
+                    <Td>${row.price_per_gallon / 100}</Td>
+                    <Td>${row.total_price / 100}</Td>
                   </tr>
                 ))}
               </tbody>
@@ -64,20 +64,35 @@ const Td = ({ children }) => (
 );
 
 const GetQuote = () => {
-  console.log("GetQuote");
   const alert = useAlert();
   const [gallon, setGallon] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [todayDate, setTodayDate] = useState("");
   const [prevHist, setPrevHist] = useState([]);
+  const [addr1, setAddr1] = useState("");
+  const [addr2, setAddr2] = useState("");
 
   useEffect(() => {
     (async () => {
       const prev = await apiclient
         .get("http://localhost:3001/quoteinfo")
         .then((r) => r.data.quotes);
-      console.log(prev);
       setPrevHist(prev);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const uinfo = await apiclient
+        .get("http://localhost:3001/userinfo")
+        .then((r) => {
+          return {
+            addr1: r.data.addr1,
+            addr2: r.data.addr2,
+          };
+        });
+      setAddr1(uinfo.addr1);
+      setAddr2(uinfo.addr2);
     })();
   }, []);
 
@@ -149,7 +164,8 @@ const GetQuote = () => {
                       </label>
                       <div className="mt-1">
                         <label className="appearance-none bg-gray-200 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                          The location specified in your profile.
+                          <div>{ addr1 }</div>
+                          <div>{ addr2 }</div>
                         </label>
                       </div>
                     </div>
@@ -202,11 +218,6 @@ const GetQuote = () => {
                       "Total Amount due",
                     ]}
                     rows={prevHist}
-                    // rows={[
-                    //   ["06/23/2021", "20", "09/23/2021", "2", "40"],
-                    //   ["10/07/2020", "25", "01/25/2021", "2", "50"],
-                    //   ["02/28/2019", "40", "05/01/2019", "1.5", "60"],
-                    // ]}
                   />
                 </div>
               </div>
