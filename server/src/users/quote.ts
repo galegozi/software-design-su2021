@@ -15,8 +15,7 @@ router.post(
                 message: "A username and a body with gallons and delivery date are required."
             });
         }
-        let mygal = parseInt(req.body.gallon);
-        if( !mygal || mygal < 0 || !Number.isInteger(req.body.gallon) ) {
+        if( !req.body.gallon || Number(req.body.gallon) <= 0 || !Number.isInteger(Number(req.body.gallon)) ) {
             return res.status(400).send({
                 error: true,
                 message: "Gallons must be a positive integer."
