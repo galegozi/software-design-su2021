@@ -386,6 +386,17 @@ describe('POST /quote', () => {
       .expect(400, done);
   })
 
+  it('fails (gallons are negative)', async done => {
+    request(app)
+      .post('/quote')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        gallon: -1,
+        deliveryDate: '2018-01-01',
+      })
+      .expect(400, done);
+  })
+
   it('fails (bad delivery date)', async done => {
     request(app)
       .post('/quote')
