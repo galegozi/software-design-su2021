@@ -21,10 +21,14 @@ passportJWTStrategy(passport)
 // add the subrouters
 app.use(usersRouter)
 
+let myport = 0
+export const fxn = () => {
+  console.log('listening on port: ' + myport)
+}
+
 export const main = (port?: number) => {
-  const server = app.listen(port || CONFIG.port, () => {
-    console.log(`Server listening at http://localhost:${port || CONFIG.port}`)
-  })
+  myport = port || CONFIG.port
+  const server = app.listen(myport, fxn)
   return server
 }
 

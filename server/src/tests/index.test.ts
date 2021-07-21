@@ -1,4 +1,4 @@
-import app, { main } from '../app'
+import app, { fxn, main } from '../app'
 import request from 'supertest'
 import 'setimmediate'
 import { createSignedJWTForUser } from '../users/auth'
@@ -12,6 +12,21 @@ describe('server runs', () => {
     expect(() => {
       const server = main(3002)
       server.close()
+    }).not.toThrow()
+    done()
+  })
+
+  it('starts', async done => {
+    expect(() => {
+      const server = main()
+      server.close()
+    }).not.toThrow()
+    done()
+  })
+
+  it('works', async done => {
+    expect(() => {
+      fxn()
     }).not.toThrow()
     done()
   })
