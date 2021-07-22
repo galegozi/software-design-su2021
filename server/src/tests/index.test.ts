@@ -258,7 +258,7 @@ describe('POST /userinfo', () => {
       })
       .expect(400, done)
   })
-  it('rejects zip codes that are longer than 5 characters', async done => {
+  it('rejects zip codes that are longer than 9 characters', async done => {
     request(app)
       .post('/userinfo')
       .set('Authorization', `bearer ${token}`)
@@ -268,7 +268,7 @@ describe('POST /userinfo', () => {
         addr2: '',
         city: 'Houston',
         state: 'TX',
-        zipCode: '770799', // zip code too long
+        zipCode: '7707999999', // zip code too long
       })
       .expect(400, done)
   })
