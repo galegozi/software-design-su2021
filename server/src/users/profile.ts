@@ -13,8 +13,8 @@ router.post(
     // get the user updated profile out of the request
     const { name, addr1, addr2, city, state, zipCode } = req.body
     //validation
-    //name must have less than 100 characters
-    if (name.length > 100) {
+    //name must have less than 50 characters
+    if (name.length > 50) {
       return res.status(400).json({ error: true, message: 'Name is too long' })
     }
     //addr1 must have at least 5 characters
@@ -23,6 +23,12 @@ router.post(
         .status(400)
         .json({ error: true, message: 'Address 1 is too short' })
     }
+    //addr1 must have at least 5 characters
+      if (addr1.length > 100) {
+        return res
+          .status(400)
+          .json({ error: true, message: 'Address 1 is too long' })
+      }
     //addr1 must contain alphanumerical, '.', '-' and ' ' characters only
     if (/[^A-Za-z0-9'\.\-\s\,\#]/.test(addr1)) {
       return res
@@ -36,26 +42,35 @@ router.post(
           .status(400)
           .json({ error: true, message: 'Address 2 has invalid character' })
       }
+      //addr2 length must be less than 100
+      if (addr2?.length > 100) {
+        return res
+          .status(400)
+          .json({ error: true, message: 'Address 2 is too long' })
+      }
     }
-    //city must have at least 3 characters, alphabetical only
+    //city must have have 3-100 characters, alphabetical only
     if (city.length < 3) {
       return res.status(400).json({ error: true, message: 'City is too short' })
+    }
+    if (city.length > 100) {
+      return res.status(400).json({ error: true, message: 'City is too long' })
     }
     if (/[^a-zA-Z]/.test(city)) {
       return res
         .status(400)
         .json({ error: true, message: 'City must contain letter only' })
     }
-    //zipCode must have 5 characters, numerical only
-    if (/[^0-9]/.test(zipCode)) {
+    //zipCode must have 5-9 characters, numerical only
+    if (/[^0-9\s\-]/.test(zipCode)) {
       return res
         .status(400)
         .json({ error: true, message: 'Zip Code must contain digit only' })
     }
-    if (zipCode.length != 5) {
+    if (zipCode.length < 5 || zipCode.length > 10) {
       return res
         .status(400)
-        .json({ error: true, message: 'Zip Code must have 5 digits' })
+        .json({ error: true, message: 'Zip Code must have 5 to 9 digits' })
     }
 
     // validate that every fields are correct
