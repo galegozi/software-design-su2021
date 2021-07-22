@@ -353,19 +353,17 @@ describe('POST /quote', () => {
       .post('/login')
       .send({ username: 'asdf', password: 'asdf' })
     token = res.body
-    done();
+    done()
   })
   it('fails (lack of parameters)', async done => {
     request(app)
       .post('/quote')
       .set('Authorization', `bearer ${token}`)
       .send({})
-      .expect(400, done);
+      .expect(400, done)
   })
   it('fails (no user)', async done => {
-    request(app)
-      .post('/quote')
-      .expect(401, done);
+    request(app).post('/quote').expect(401, done)
   })
 
   it('succeeds', async done => {
@@ -376,7 +374,7 @@ describe('POST /quote', () => {
         gallon: 10,
         deliveryDate: '2018-01-01',
       })
-      .expect(200, done);
+      .expect(200, done)
   })
 
   it('fails (fractional gallons)', async done => {
@@ -387,7 +385,7 @@ describe('POST /quote', () => {
         gallon: 1.5,
         deliveryDate: '2018-01-01',
       })
-      .expect(400, done);
+      .expect(400, done)
   })
 
   it('fails (gallons not a number)', async done => {
@@ -398,7 +396,7 @@ describe('POST /quote', () => {
         gallon: 'asdf',
         deliveryDate: '2018-01-01',
       })
-      .expect(400, done);
+      .expect(400, done)
   })
 
   it('fails (gallons are negative)', async done => {
@@ -409,7 +407,7 @@ describe('POST /quote', () => {
         gallon: -1,
         deliveryDate: '2018-01-01',
       })
-      .expect(400, done);
+      .expect(400, done)
   })
 
   it('fails (bad delivery date)', async done => {
@@ -420,9 +418,9 @@ describe('POST /quote', () => {
         gallon: 10,
         deliveryDate: 'hello',
       })
-      .expect(400, done);
+      .expect(400, done)
   })
-});
+})
 
 describe('GET /quoteinfo', () => {
   let token
@@ -431,19 +429,17 @@ describe('GET /quoteinfo', () => {
       .post('/login')
       .send({ username: 'asdf', password: 'asdf' })
     token = res.body
-    done();
+    done()
   })
 
   it('fails (no user)', async done => {
-    request(app)
-      .get('/quoteinfo')
-      .expect(401, done);
+    request(app).get('/quoteinfo').expect(401, done)
   })
 
   it('succeeds', async done => {
     request(app)
       .get('/quoteinfo')
       .set('Authorization', `bearer ${token}`)
-      .expect(200, done);
+      .expect(200, done)
   })
 })
