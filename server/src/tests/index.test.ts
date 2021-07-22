@@ -174,7 +174,7 @@ describe('POST /userinfo', () => {
     token = res.body
     done()
   })
-  it('rejects names longer than 100 characters', async done => {
+  it('rejects names longer than 50 characters', async done => {
     request(app)
       .post('/userinfo')
       .set('Authorization', `bearer ${token}`)
@@ -188,13 +188,27 @@ describe('POST /userinfo', () => {
       })
       .expect(400, done)
   })
-  it('rejects addresses shorter than 5 characters', async done => {
+  it('rejects addresses1 shorter than 5 characters', async done => {
     request(app)
       .post('/userinfo')
       .set('Authorization', `bearer ${token}`)
       .send({
         name: 'Michael McQuade',
         addr1: '925', // 3 characters
+        addr2: '',
+        city: 'Houston',
+        state: 'TX',
+        zipCode: '77079',
+      })
+      .expect(400, done)
+  })
+  it('rejects addresses1 longer than 100 characters', async done => {
+    request(app)
+      .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        name: 'Michael McQuade',
+        addr1: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 110 A characters
         addr2: '',
         city: 'Houston',
         state: 'TX',
@@ -230,6 +244,20 @@ describe('POST /userinfo', () => {
       })
       .expect(400, done)
   })
+  it('rejects addresses2 longer than 100 characters', async done => {
+    request(app)
+      .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        name: 'Michael McQuade',
+        addr1: '925 Eldridge Pkwy',
+        addr2: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // 110 A characters
+        city: 'Houston',
+        state: 'TX',
+        zipCode: '77079',
+      })
+      .expect(400, done)
+  })
   it('rejects invalid characters in city name', async done => {
     request(app)
       .post('/userinfo')
@@ -258,7 +286,7 @@ describe('POST /userinfo', () => {
       })
       .expect(400, done)
   })
-  it('rejects zip codes that are longer than 5 characters', async done => {
+  it('rejects zip codes that are longer than 10 characters', async done => {
     request(app)
       .post('/userinfo')
       .set('Authorization', `bearer ${token}`)
@@ -268,7 +296,7 @@ describe('POST /userinfo', () => {
         addr2: '',
         city: 'Houston',
         state: 'TX',
-        zipCode: '770799', // zip code too long
+        zipCode: '7707-12345', // zip code too long
       })
       .expect(400, done)
   })
