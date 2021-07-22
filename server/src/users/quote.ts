@@ -11,17 +11,10 @@ router.post(
   '/quote',
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    if (
-      !req ||
-      !req.user ||
-      !req.body ||
-      !req.body.gallon ||
-      !req.body.deliveryDate
-    ) {
+    if (!req.user || !req.body?.gallon || !req.body?.deliveryDate) {
       return res.status(400).send({
         error: true,
-        message:
-          'A username and a body with gallons and delivery date are required.',
+        message: 'Gallons and delivery date are required.',
       });
     }
     if (
@@ -44,7 +37,7 @@ router.post(
 
     const { id, username } = req.user as { username: string; id: number };
 
-    const { gallon, deliveryDate } = req.body;
+    const { gallon, deliveryDate, finalize } = req.body;
 
     try {
       var userinfo = await prisma.clientinformation.findFirst({
@@ -74,21 +67,26 @@ router.post(
         });
 
         try {
-          const quote = await prisma.fuelquote.create({
-            data: {
-              usercredentials: { connect: { id } },
-              gallons: Number(gallon),
-              price_per_gallon: Math.ceil(price.ppg * 100),
-              total_price: price.storedPrice,
-              delivery_date: new Date(deliveryDate),
-              delivery_address: userinfo.address,
-              delivery_city: userinfo.city,
-              delivery_state: userinfo.state,
-              delivery_zip: userinfo.zip,
-              delivery_address2: userinfo.address2,
-            },
+          if (finalize) {
+            const quote = await prisma.fuelquote.create({
+              data: {
+                usercredentials: { connect: { id } },
+                gallons: Number(gallon),
+                price_per_gallon: Math.ceil(price.ppg * 100),
+                total_price: price.storedPrice,
+                delivery_date: new Date(deliveryDate),
+                delivery_address: userinfo.address,
+                delivery_city: userinfo.city,
+                delivery_state: userinfo.state,
+                delivery_zip: userinfo.zip,
+                delivery_address2: userinfo.address2,
+              },
+            });
+          }
+          return res.status(200).json({
+            error: false,
+            price: { totalPrice: price.storedPrice, ppg: price.ppg },
           });
-          return res.status(200).json({ error: false });
         } catch (err) {
           console.error(err);
           return res.status(500).json({
