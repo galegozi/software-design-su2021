@@ -286,7 +286,7 @@ describe('POST /userinfo', () => {
       })
       .expect(400, done)
   })
-  it('rejects zip codes that are longer than 10 characters', async done => {
+  it('rejects zip codes that are longer than 9 characters', async done => {
     request(app)
       .post('/userinfo')
       .set('Authorization', `bearer ${token}`)
