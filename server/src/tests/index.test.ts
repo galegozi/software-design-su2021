@@ -420,6 +420,22 @@ describe('POST /quote', () => {
       })
       .expect(400, done)
   })
+
+  it('fails (bad username)', async done => {
+    const res = await request(app)
+      .post('/login')
+      .send({ username: 'thisuserdoesnothaveaprofile', password: 'thisuserdoesnothaveaprofile' })
+    let tempToken = res.body
+
+    request(app)
+      .post('/quote')
+      .set('Authorization', `bearer ${tempToken}`)
+      .send({
+        gallon: 10,
+        deliveryDate: '2018-01-01',
+      })
+      .expect(400, done)
+  })
 })
 
 describe('GET /quoteinfo', () => {
