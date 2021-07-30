@@ -286,6 +286,20 @@ describe('POST /userinfo', () => {
       })
       .expect(400, done)
   })
+  it('rejects long city names', async done => {
+    request(app)
+      .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        name: 'Michael McQuade',
+        addr1: '925 Eldridge Pkwy',
+        addr2: '',
+        city: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // city too long
+        state: 'TX',
+        zipCode: '77079',
+      })
+      .expect(400, done)
+  })
   it('rejects zip codes that are longer than 9 characters', async done => {
     request(app)
       .post('/userinfo')

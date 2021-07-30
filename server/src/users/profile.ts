@@ -24,11 +24,11 @@ router.post(
         .json({ error: true, message: 'Address 1 is too short' })
     }
     //addr1 must have at least 5 characters
-      if (addr1.length > 100) {
-        return res
-          .status(400)
-          .json({ error: true, message: 'Address 1 is too long' })
-      }
+    if (addr1.length > 100) {
+      return res
+        .status(400)
+        .json({ error: true, message: 'Address 1 is too long' })
+    }
     //addr1 must contain alphanumerical, '.', '-' and ' ' characters only
     if (/[^A-Za-z0-9'\.\-\s\,\#]/.test(addr1)) {
       return res
@@ -67,7 +67,7 @@ router.post(
         .status(400)
         .json({ error: true, message: 'Zip Code must contain digit only' })
     }
-    if (zipCode.length < 5 || zipCode.length > 10) {
+    if (zipCode.length < 5 || zipCode.length > 9) {
       return res
         .status(400)
         .json({ error: true, message: 'Zip Code must have 5 to 9 digits' })
