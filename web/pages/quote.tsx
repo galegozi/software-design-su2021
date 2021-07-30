@@ -8,6 +8,7 @@ import axios from 'axios'
 import apiclient from '../utils/apiclient'
 import { useAlert } from 'react-alert'
 import useSwr from 'swr'
+import { useCallback } from 'react'
 
 interface ITableProps {
   headers: string[]
@@ -72,7 +73,10 @@ const GetQuote = () => {
   const [addr1, setAddr1] = useState('')
   const [addr2, setAddr2] = useState('')
 
-  const { data, error, mutate } = useSwr(
+  const [pricePerGallon, setPricePerGallon] = useState(null)
+  const [totalPrice, setTotalPrice] = useState(null)
+
+  const { data: quoteData, error, mutate } = useSwr(
     'http://localhost:3001/quoteinfo',
     apiclient
   )
@@ -91,6 +95,29 @@ const GetQuote = () => {
       setAddr2(uinfo.addr2)
     })()
   }, [])
+  const checkPrice = useCallback(async () => {
+    try {
+      // send request WITHOUT finalize
+      const response = await apiclient
+        .post('http://localhost:3001/quote', {
+          gallon,
+          deliveryDate,
+        })
+        .then(r => r.data.price)
+      const { ppg, totalPrice } = response
+      setTotalPrice(totalPrice)
+      setPricePerGallon(ppg)
+    } catch (e) {
+      console.error(e?.response?.data)
+      const message = e?.response?.data?.message
+      if (message) {
+        alert.error(message)
+      } else {
+        // show generic message
+        alert.error('unknown error occurred')
+      }
+    }
+  }, [apiclient, gallon, deliveryDate])
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
@@ -99,6 +126,7 @@ const GetQuote = () => {
       const response = await apiclient.post('http://localhost:3001/quote', {
         gallon,
         deliveryDate,
+        finalize: true,
       })
       console.log(response)
       alert.success('Quote updated successfully')
@@ -184,6 +212,43 @@ const GetQuote = () => {
                         ></input>
                       </div>
                     </div>
+                    <div className='flex flex-row items-end'>
+                      <div className='mr-2'>
+                        <label
+                          htmlFor='deliveryDate'
+                          className='block text-sm font-medium text-gray-700'
+                        >
+                          Price Per Gallon
+                        </label>
+                        <div className='appearance-none bg-gray-200 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'>
+                          <input disabled value={pricePerGallon || ''}></input>
+                        </div>
+                      </div>
+                      <div className='mr-2'>
+                        <label
+                          htmlFor='deliveryDate'
+                          className='block text-sm font-medium text-gray-700'
+                        >
+                          Total Price
+                        </label>
+                        <div className='appearance-none bg-gray-200 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'>
+                          <input
+                            disabled
+                            value={totalPrice / 100 || ''}
+                          ></input>
+                        </div>
+                      </div>
+                      <div>
+                        <button
+                          type='button'
+                          onClick={checkPrice}
+                          className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                        >
+                          Check Price
+                        </button>
+                      </div>
+                    </div>
+
                     <div>
                       <button
                         type='submit'
@@ -212,7 +277,7 @@ const GetQuote = () => {
                       'Price Per Gallon',
                       'Total Amount due',
                     ]}
-                    rows={data?.data?.quotes}
+                    rows={quoteData?.data?.quotes}
                   />
                 </div>
               </div>
