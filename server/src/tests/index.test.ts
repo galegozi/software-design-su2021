@@ -151,6 +151,7 @@ describe('GET /userinfo', () => {
   })
 
   it('properly returns user info', async done => {
+
     const res = await request(app)
       .get('/userinfo')
       .set('Authorization', `bearer ${token}`)
@@ -163,6 +164,8 @@ describe('GET /userinfo', () => {
     expect(res.body).toHaveProperty('addr2')
     done()
   })
+
+  
 })
 
 describe('POST /userinfo', () => {

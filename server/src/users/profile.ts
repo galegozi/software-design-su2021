@@ -98,7 +98,7 @@ router.post(
       })
       return res.status(200).json({ error: false, message: 'User Updated' })
     } catch (e) {
-      console.error(e)
+      //console.error(e)
       return res
         .status(400)
         .json({ error: true, message: 'Unknown Error occurred' })
@@ -120,11 +120,11 @@ router.get(
       const user = await prisma.usercredentials.findFirst({
         where: { username },
       })
-
-      if (!user) {
-        return res.status(400).json({ error: true, message: 'User not found' })
-      }
-      const id = user.id
+      //console.log(user)
+      //if (!user) {
+        //return res.status(400).json({ error: true, message: 'User not found' })
+      //}
+      const id = user?.id
       const userInfo = await prisma.clientinformation.findUnique({
         select: {
           name: true,
@@ -145,7 +145,7 @@ router.get(
         addr2: userInfo?.address2,
       })
     } catch (e) {
-      console.error(e)
+      //console.error(e)
       return res.status(400).json({
         error: true,
         message: 'Unknown Error occurred while trying to load user profile',
