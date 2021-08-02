@@ -74,13 +74,13 @@ const SignIn: React.FC<ITabProps> = ({ alert, login }) => {
     try {
       const token = await axios
         .post('http://localhost:3001/login', { username, password })
-        .then((r) => r.data)
+        .then(r => r.data)
       alert.success('Logged in successfully')
       await localforage.setItem('token', token)
       const decoded: Token = jwtDecode(token) as Token
       const id = decoded.sub.id
       login(username, id)
-      router.push('/quote')
+      router.push('/profile')
     } catch (e) {
       if (e?.response?.data?.message) {
         alert.error(e.response.data.message)
@@ -108,7 +108,7 @@ const SignIn: React.FC<ITabProps> = ({ alert, login }) => {
                 value={username}
                 id='username'
                 name='username'
-                onChange={(e) => setUsername(e.currentTarget.value)}
+                onChange={e => setUsername(e.currentTarget.value)}
                 required
                 className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
               />
@@ -125,7 +125,7 @@ const SignIn: React.FC<ITabProps> = ({ alert, login }) => {
             <div className='mt-1'>
               <input
                 value={password}
-                onChange={(e) => setPassword(e.currentTarget.value)}
+                onChange={e => setPassword(e.currentTarget.value)}
                 id='password'
                 name='password'
                 type='password'
@@ -157,7 +157,7 @@ const Register: React.FC<ITabProps> = ({ alert, setTab }) => {
 
   const router = useRouter()
 
-  const validateRegistration = (e) => {
+  const validateRegistration = e => {
     e.preventDefault()
 
     if (password === password2) {
@@ -201,7 +201,7 @@ const Register: React.FC<ITabProps> = ({ alert, setTab }) => {
                 value={username}
                 id='username'
                 name='username'
-                onChange={(e) => setUsername(e.currentTarget.value)}
+                onChange={e => setUsername(e.currentTarget.value)}
                 required
                 className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'
               />
@@ -220,7 +220,7 @@ const Register: React.FC<ITabProps> = ({ alert, setTab }) => {
                 value={password}
                 id='password'
                 name='password'
-                onChange={(e) => setPassword(e.currentTarget.value)}
+                onChange={e => setPassword(e.currentTarget.value)}
                 type='password'
                 autoComplete='current-password'
                 required
@@ -239,7 +239,7 @@ const Register: React.FC<ITabProps> = ({ alert, setTab }) => {
             <div className='mt-1'>
               <input
                 value={password2}
-                onChange={(e) => setPassword2(e.currentTarget.value)}
+                onChange={e => setPassword2(e.currentTarget.value)}
                 id='confirmpassword'
                 name='password'
                 type='password'
@@ -273,7 +273,7 @@ const IndexPage = () => {
   // handle if the user directly navigated to this page but they're already logged in
   useEffect(() => {
     if (!user.loading && user.username) {
-      router.push('/quote')
+      router.push('/profile')
     }
   }, [user])
 
