@@ -531,12 +531,39 @@ describe('Pricing Module Tests', () => {
     expect(res).toStrictEqual({storedPrice: 1755, ppg: 1.755, currPrice: 1.5})
   })
 
-  it('tx, no quotes,10 gallons', () => {
+  it('tx, no quotes, 10 gallons', () => {
+    const res = calculatePrice({
+      state: 'TX',
+      hasPrevQuotes: false,
+      gallons: 10
+    })
+    expect(res).toStrictEqual({storedPrice: 1725, ppg: 1.725, currPrice: 1.5})
+  })
+
+  it('no tx, quotes, 10 gallons', () => {
+    const res = calculatePrice({
+      state: 'AL',
+      hasPrevQuotes: true,
+      gallons: 10
+    })
+    expect(res).toStrictEqual({storedPrice: 1740, ppg: 1.74, currPrice: 1.5})
+  })
+
+  it('tx, quotes, 10 gallons', () => {
     const res = calculatePrice({
       state: 'TX',
       hasPrevQuotes: true,
       gallons: 10
     })
-    expect(res).toStrictEqual({storedPrice: 1725, ppg: 1.725, currPrice: 1.5})
+    expect(res).toStrictEqual({storedPrice: 1710, ppg: 1.71, currPrice: 1.5})
+  })
+
+  it('tx, quotes, 2000 gallons', () => {
+    const res = calculatePrice({
+      state: 'TX',
+      hasPrevQuotes: true,
+      gallons: 2000
+    })
+    expect(res).toStrictEqual({storedPrice: 339000, ppg: 1.695, currPrice: 1.5})
   })
 })

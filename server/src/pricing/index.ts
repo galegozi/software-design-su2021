@@ -22,8 +22,7 @@ const calculatePrice = ({
   const ppg = margin + currPrice
 
   const totalPrice = ppg * gallons
-
-  const storedPrice = Math.ceil(totalPrice * 100)
+  const storedPrice = Math.round(totalPrice * 100)
 
   return { storedPrice, ppg, currPrice }
 }
