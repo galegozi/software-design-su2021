@@ -17,6 +17,12 @@ router.post(
     if (name.length > 50) {
       return res.status(400).json({ error: true, message: 'Name is too long' })
     }
+    //name must not have special characters
+    if (/[^a-zA-Z\s]/.test(name)) {
+      return res
+        .status(400)
+        .json({ error: true, message: 'Name must contain letter only' })
+    }
     //addr1 must have at least 5 characters
     if (addr1.length < 5) {
       return res

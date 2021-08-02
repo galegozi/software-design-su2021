@@ -191,6 +191,20 @@ describe('POST /userinfo', () => {
       })
       .expect(400, done)
   })
+  it('rejects name that has invalid characters', async done => {
+    request(app)
+      .post('/userinfo')
+      .set('Authorization', `bearer ${token}`)
+      .send({
+        name: 'Michael !', // 110 A characters
+        addr1: '925 N Eldridge Pkwy',
+        addr2: '',
+        city: 'Houston',
+        state: 'TX',
+        zipCode: '77079',
+      })
+      .expect(400, done)
+  })
   it('rejects addresses1 shorter than 5 characters', async done => {
     request(app)
       .post('/userinfo')
