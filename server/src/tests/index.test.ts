@@ -2,6 +2,8 @@ import app, { fxn, main } from '../app'
 import request from 'supertest'
 import 'setimmediate'
 import { createSignedJWTForUser } from '../users/auth'
+import calculatePrice from '../pricing'
+import calculatePriceParams from '../pricing'
 
 import * as CONFIG from '../config'
 
@@ -165,7 +167,7 @@ describe('GET /userinfo', () => {
     done()
   })
 
-  
+
 })
 
 describe('POST /userinfo', () => {
@@ -516,5 +518,25 @@ describe('GET /quoteinfo', () => {
       .get('/quoteinfo')
       .set('Authorization', `bearer ${token}`)
       .expect(200, done)
+  })
+})
+
+describe('Pricing Module Tests', () => {
+  it('not tx, no quotes, 10 gallons', () => {
+    const res = calculatePrice({
+      state: 'AL',
+      hasPrevQuotes: false,
+      gallons: 10
+    })
+    expect(res).toStrictEqual({storedPrice: 1755, ppg: 1.755, currPrice: 1.5})
+  })
+
+  it('tx, no quotes,10 gallons', () => {
+    const res = calculatePrice({
+      state: 'TX',
+      hasPrevQuotes: true,
+      gallons: 10
+    })
+    expect(res).toStrictEqual({storedPrice: 1725, ppg: 1.725, currPrice: 1.5})
   })
 })
